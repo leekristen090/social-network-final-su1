@@ -3,8 +3,8 @@ import {Navigate, Route, Routes} from "react-router-dom";
 import ProfileInfo from "./ProfileInfo.tsx";
 import Reviews from "./Reviews.tsx";
 import Following from "./Following.tsx";
-import Followers from "./Followers.tsx";
 import ProfileEditor from "./ProfileEditor.tsx";
+import PublicProfile from "./PublicProfile.tsx";
 
 export default function Profile() {
     return (
@@ -17,7 +17,7 @@ export default function Profile() {
                 <Route path={"User/:userId"} element={<ProfileEditor />} />
                 <Route path={"Reviews"} element={<Reviews />} />
                 <Route path={"Following"} element={<Following />} />
-                <Route path={"Followers"} element={<Followers />} />
+                <Route path={"Following/:userId"} element={<PublicProfile />} />
             </Routes>
         </div>
     );

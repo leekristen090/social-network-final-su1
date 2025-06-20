@@ -9,6 +9,7 @@ export default function ProfileTOC() {
     const {currentUser} = useSelector((state: any) => state.accountReducer);
     const [users] = useState(db.users);
     const followingUsers = users.filter(user => currentUser?.following.includes(user._id));
+    const isViewing = pathname.includes("Following/");
 
     return (
         <Nav variant={"tabs"}>
@@ -24,12 +25,22 @@ export default function ProfileTOC() {
                     Reviews
                 </Nav.Link>
             </Nav.Item>
-            <Nav.Item className={"sn-bg-cream"}>
-                <Nav.Link to={"/GoodBooks/Account/Profile/Following"} as={Link} active={pathname.includes("Following")}
-                          className={`${pathname.includes("Following") ? "text-black" : "text-black"}`}>
-                    Following ({followingUsers.length})
-                </Nav.Link>
-            </Nav.Item>
+            {!isViewing && (
+                <Nav.Item className={"sn-bg-cream"}>
+                    <Nav.Link to={"/GoodBooks/Account/Profile/Following"} as={Link} active={pathname.includes("Following")}
+                              className={`${pathname.includes("Following") ? "text-black" : "text-black"}`}>
+                        Following ({followingUsers.length})
+                    </Nav.Link>
+                </Nav.Item>
+            )}
+            {isViewing && (
+                <Nav.Item className={"sn-bg-cream"}>
+                    <Nav.Link to={"/GoodBooks/Account/Profile/Following"} as={Link} active={pathname.includes("Following")}
+                              className={`${pathname.includes("Following") ? "text-black" : "text-black"}`}>
+                        Back to Following
+                    </Nav.Link>
+                </Nav.Item>
+            )}
         </Nav>
     );
 }

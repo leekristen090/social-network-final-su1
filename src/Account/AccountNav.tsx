@@ -15,6 +15,8 @@ export default function AccountNav() {
                     </Link>
                 </div>
             ))}
+            {/*need to add a users tab for admin users to be able to edit or delete users*/}
+
             {/*<Link to={"/GoodBooks/Account/Signin"} className={`list-group-item border border-0 ${pathname.includes("Signin") ? "border-start border-black border-3" : ""}`}>*/}
             {/*    SignIn*/}
             {/*</Link><br />*/}
