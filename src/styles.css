@@ -1,0 +1,82 @@
+body   {  margin: 0;  padding: 0;  }
+body * {  font-family: Arial, Helvetica, sans-serif;  }
+
+@media (min-width: 768px) {
+    #sn-social-network .sn-main-content-offset {
+        padding-left: 100px !important;
+        padding-right: 100px !important;
+    }
+}
+
+.sn-margin-right-left { margin-left: 50px; margin-right: 50px; }
+.sn-below-header { margin-top: 100px;}
+.sn-bg-color-custom-blue {background-color: #578fc7;}
+.sn-header-brand-text {
+    font-size: 2rem;
+    font-weight: bold;
+}
+.sn-header-link-icon-size {
+    font-size: 40px;
+}
+.sn-header-link-text {
+    font-size: 20px;
+}
+.sn-footer {
+    text-align: center;
+}
+.sn-bg-pink {
+    background-color: #f9cdd5;
+}
+.sn-bg-green {
+    background-color: #7a8450;
+}
+.sn-text-pink {
+    color: #f9cdd5;
+}
+.sn-text-green {
+    color: #7a8450;
+}
+.sn-text-tan {
+    color: #ad916d;
+}
+.sn-text-cream {
+    color: #f7e4d1;
+}
+.sn-bg-tan {
+    background-color: #ad916d;
+}
+.sn-bg-cream {
+    background-color: #f7e4d1;
+}
+
+#sn-book-card-btn.sn-bg-cream,
+.btn.sn-bg-cream {
+    background-color: #f7e4d1 !important;
+    color: black;
+    border-color: #f7e4d1;
+}
+#sn-book-card-btn.sn-bg-tan,
+.btn.sn-bg-tan{
+    background-color: #ad916d !important;
+    color: black;
+    border-color: #ad916d;
+}
+/*.progress-tan {*/
+/*    background-color: #ad916d !important;*/
+/*}*/
+.sn-progress-tan .progress-bar {
+    background-color: #ad916d; /* Tan color */
+}
+
+/* Background of the empty portion */
+.sn-progress-tan {
+    background-color: #e9ecef; /* Light gray (Bootstrap's default) */
+    height: 20px; /* Adjust height as needed */
+    border-radius: 4px; /* Rounded corners */
+}
+
+#sn-social-network {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}

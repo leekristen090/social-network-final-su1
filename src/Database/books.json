@@ -1,0 +1,15 @@
+[
+  {
+    "googleBooksId": "abc123",
+    "title": "The Great Gatsby",
+    "authors": ["F. Scott Fitzgerald"],
+    "coverURL": "/images/greatGatsby.jpg",
+    "description": "A story of wealth and love..."
+  },
+  {"googleBooksId": "bcd234",
+    "title": "Hamilton",
+    "authors": ["Ron Chernow"],
+    "coverURL": "/images/hamilton.jpg",
+    "description": "Comprehensive account of the life of a Founding Father...Lorem ipsum dolor sit amet, consectetur adipisicing elit. Amet animi atque blanditiis deleniti dicta ea fuga in iste molestias, mollitia nobis, officia optio perspiciatis provident quas qui quibusdam sunt voluptates."
+  }
+]

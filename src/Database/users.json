@@ -1,0 +1,44 @@
+[
+  {
+    "_id": "123",
+    "username": "booklover123",
+    "password": "book123",
+    "email": "reader@example.com",
+    "firstName": "Jane",
+    "lastName": "Doe",
+    "role": "READER",
+    "following": ["234", "456"],
+    "bio": "Books and coffee!"
+  },
+  {
+    "_id": "234",
+    "username": "mystery_author",
+    "password": "mystery123",
+    "email": "author@example.com",
+    "firstName": "John",
+    "lastName": "Appleseed",
+    "role": "AUTHOR",
+    "following": ["123"],
+    "bio": "Writer of mystery novels"
+  },
+  {
+    "_id": "345",
+    "username": "admin",
+    "password": "admin123",
+    "email": "admin@example.com",
+    "firstName": "Pooh",
+    "lastName": "Bear",
+    "role": "ADMIN"
+  },
+  {
+    "_id": "456",
+    "username": "cozyreads789",
+    "password": "booknook123",
+    "email": "kangaRue@example.com",
+    "firstName": "Kanga",
+    "lastName": "Rue",
+    "role": "READER",
+    "following": ["123"],
+    "bio": "Love reading on a rainy day"
+  }
+]
