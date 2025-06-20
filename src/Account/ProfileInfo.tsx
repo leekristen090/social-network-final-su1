@@ -52,17 +52,17 @@ export default function ProfileInfo() {
                     </Card>
                 </Col>
                 <Col style={{width: "600px"}}>
-                    <div className={"clearfix mt-1"} id={"sn-reading-goals"}>
+                    <div className={"clearfix mt-2"} id={"sn-reading-goals"}>
                         <h2 className={"float-start"}>Reading Goals</h2>
                         <Button className={"float-end sn-bg-tan"} id={"sn-new-goal"}>
                             <FaPlus /> New Goal
                         </Button>
-                    </div><hr/>
+                    </div>
                     <Card id={"sn-progress-card"}>
                         <Card.Body>
                             {goals.map((g) => (
                                 <div id={"sn-reading-goal"}>
-                                    <h5>
+                                    <h5 className={"mt-2"}>
                                         <b>Goal:</b> {g.goalDescription}
                                         <Button className={"float-end btn-sm btn-danger"}>Delete</Button>
                                         <Button className={"float-end btn-sm sn-bg-tan me-1"}>Edit Goal</Button>

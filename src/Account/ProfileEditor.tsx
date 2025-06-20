@@ -8,10 +8,7 @@ export default function ProfileEditor() {
     const {userId} = useParams();
     const {currentUser} = useSelector((state: any) => state.accountReducer);
     const [profile, setProfile] = useState<any>({});
-    // const [error, setError] = useState("");
-    // const [success, setSuccess] = useState("");
     const navigate = useNavigate();
-    //const dispatch = useDispatch();
     const isEditable = currentUser && (currentUser._id === userId || currentUser.role === "ADMIN");
     const handleCancel = () => {
         navigate("/GoodBooks/Account/Profile");
@@ -19,38 +16,6 @@ export default function ProfileEditor() {
     const handleSave = () => {
         navigate("/GoodBooks/Account/Profile");
     };
-    // const handleSave = () => {
-    //     const updatedUsers = db.users.map(u =>
-    //         u._id === profile._id ? profile : u
-    //     );
-    //     //db.users = updatedUsers;
-    //     if (currentUser._id === userId) {
-    //         dispatch(setCurrentUser(updatedUsers))
-    //     }
-    //     setSuccess("Profile updated successfully!");
-    //     //navigate("/GoodBooks/Account/Profile")
-    //     setTimeout(() => navigate("/GoodBooks/Account/Profile/User"), 1500);
-    // };
-    // const handleSave = (e: React.FormEvent) => {
-    //     e.preventDefault();
-    //
-    //     try {
-    //         // Update in mock database
-    //         db.users = db.users.map(u =>
-    //             u._id === profile._id ? profile : u
-    //         );
-    //
-    //         // Update current user in state if editing own profile
-    //         if (currentUser._id === profile._id) {
-    //             dispatch(setCurrentUser(profile));
-    //         }
-    //
-    //         setSuccess("Profile updated successfully!");
-    //         setTimeout(() => navigate("/GoodBooks/Account/Profile/User"), 1500);
-    //     } catch (err) {
-    //         setError("Failed to update profile");
-    //     }
-    // };
     useEffect(() => {
         if (!userId) {
             navigate("/GoodBooks/Account/Profile");
@@ -58,7 +23,6 @@ export default function ProfileEditor() {
         }
         const user = db.users.find(u => u._id === userId);
         if (!user) {
-            // setError("User not found!");
             return;
         }
         setProfile(user);
@@ -72,8 +36,6 @@ export default function ProfileEditor() {
     }
     return (
         <div id={"sn-profile-editor"}>
-            {/*{error && <Alert variant="danger">{error}</Alert>}*/}
-            {/*{success && <Alert variant={"success"}>{success}</Alert> }*/}
             <Card id={"sn-profile-editor-card"}>
                 <Card.Body>
                     <h3>Public Information</h3>
@@ -95,7 +57,7 @@ export default function ProfileEditor() {
                     <FormControl type={"text"} placeholder={"last name"} id={"sn-last-name"} defaultValue={profile.lastName}
                                  onChange={(e) => setProfile({...profile, lastName: e.target.value})} /><br/>
                     Date of Birth:
-                    <FormControl type={"date"} placeholder={"2020-01-01"} id={"sn-dob"} />
+                    <FormControl type={"date"} placeholder={"2020-01-01"} id={"sn-dob"} defaultValue={profile.dob} />
                 </Card.Body>
                 <Card.Footer>
                     <Button className={"float-end sn-bg-tan"} id={"sn-profile-edit-save-button"}

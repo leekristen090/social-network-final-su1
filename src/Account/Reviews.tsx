@@ -7,20 +7,12 @@ import {Link} from "react-router-dom";
 
 export default function Reviews() {
     const {currentUser} = useSelector((state: any) => state.accountReducer);
-    //const [localReviews, setLocalReviews] = useState<any[]>([]);
     const reviews = db.reviews.filter(r => r.userId === currentUser._id);
     const book = reviews.map(b => {
         const u = db.books.find(x =>x.googleBooksId === b.bookId);
         return {...b, title: u ? u.title : "Unknown book"}
     });
     if (!reviews) return <div className={"sn-below-header"}>Review not found</div>;
-    // const fetchReviews = () => {
-    //     const reviews = db.reviews.find(r => r.userId === currentUser._id);
-    //     setLocalReviews(reviews);
-    // };
-    // useEffect(() => {
-    //     fetchReviews();
-    // }, []);
     return (
         <div id={"sn-user-reviews"}>
             <Card>

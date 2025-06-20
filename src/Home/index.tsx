@@ -20,10 +20,22 @@ export default function Home() {
     }, []);
     return (
         <div id={"sn-home"} className={"sn-below-header"}>
-            <h1>Home</h1>
+            <div className={"justify-content-center align-content-center"}>
+                <h1>Welcome to GoodBooks!</h1>
+            </div>
+
             <hr />
-            <h2>Welcome to GoodBooks!</h2>
-            Checkout trending books or see what other GoodBooks users are reading and reviewing!
+            <Row className={"justify-content-center"}>
+                <Col>
+                    <h4>Looking for something new?</h4>
+                    You're in the right place.
+                </Col>
+                <Col>
+                    <h4>Connect with other GoodBooks users!</h4>
+                    See what other users are saying are their favorite (and least favorite) books are.
+                </Col>
+            </Row>
+
             <hr />
             <h3>Trending Books</h3>
             <hr />
@@ -54,6 +66,19 @@ export default function Home() {
                 <div>
                     <h3>Following</h3><hr />
                     reviews from other GoodBooks users you follow
+                    <Card>
+                        <Card.Header className={"sn-bg-tan"}>Book</Card.Header>
+                        <Card.Body>
+                            <blockquote className={"blockquote"}>
+                                <p>
+                                    Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aliquam aperiam at consectetur ea illum, ipsa iusto libero, maiores odio omnis porro praesentium quis totam vero voluptate. Animi corporis error quae?
+                                </p>
+                                <footer className={"blockquote-footer"}>
+                                    user
+                                </footer>
+                            </blockquote>
+                        </Card.Body>
+                    </Card>
                 </div>
             )}
         </div>

@@ -8,7 +8,8 @@
     "lastName": "Doe",
     "role": "READER",
     "following": ["234", "456"],
-    "bio": "Books and coffee!"
+    "bio": "Books and coffee!",
+    "dob": "2000-09-18"
   },
   {
     "_id": "234",
@@ -19,7 +20,8 @@
     "lastName": "Appleseed",
     "role": "AUTHOR",
     "following": ["123"],
-    "bio": "Writer of mystery novels"
+    "bio": "Writer of mystery novels",
+    "dob": "1995-05-10"
   },
   {
     "_id": "345",
@@ -28,7 +30,8 @@
     "email": "admin@example.com",
     "firstName": "Pooh",
     "lastName": "Bear",
-    "role": "ADMIN"
+    "role": "ADMIN",
+    "dob": "1989-11-01"
   },
   {
     "_id": "456",
@@ -39,6 +42,7 @@
     "lastName": "Rue",
     "role": "READER",
     "following": ["123"],
-    "bio": "Love reading on a rainy day"
+    "bio": "Love reading on a rainy day",
+    "dob": "2005-03-21"
   }
 ]
