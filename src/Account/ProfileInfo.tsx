@@ -3,7 +3,6 @@ import {IoSettingsOutline} from "react-icons/io5";
 import {FaPlus} from "react-icons/fa";
 import {useNavigate} from "react-router-dom";
 import {useEffect, useState} from "react";
-//import * as db from "../Database";
 import {useDispatch, useSelector} from "react-redux";
 import {setCurrentUser} from "./reducer.ts";
 import GoalForm from "./GoalForm.tsx";

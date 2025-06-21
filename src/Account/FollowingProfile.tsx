@@ -1,13 +1,16 @@
 import {useParams} from "react-router-dom";
 import * as db from "../Database";
 import {Card, Table} from "react-bootstrap";
+import {useSelector} from "react-redux";
 
-export default function PublicProfile() {
+export default function FollowingProfile() {
     const {userId} = useParams();
-    const user = db.users.find(u => u._id === userId);
+    const {users} = useSelector((state: any) => state.usersReducer);
+    const {books} = useSelector((state: any) => state.booksReducer);
+    const user = users.find((u: any) => u._id === userId);
     const reviews = db.reviews.filter(u => u.userId === userId);
     const book = reviews.map(b => {
-        const u = db.books.find(x =>x.googleBooksId === b.bookId);
+        const u = books.find((x: any) => x.googleBooksId === b.bookId);
         return {...b, title: u ? u.title : "Unknown book"}
     });
     if (!user) return <div>User Not Found</div>

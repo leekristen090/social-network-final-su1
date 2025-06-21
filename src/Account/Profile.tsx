@@ -4,7 +4,7 @@ import ProfileInfo from "./ProfileInfo.tsx";
 import Reviews from "./Reviews.tsx";
 import Following from "./Following.tsx";
 import ProfileEditor from "./ProfileEditor.tsx";
-import PublicProfile from "./PublicProfile.tsx";
+import FollowingProfile from "./FollowingProfile.tsx";
 import ProtectedRoute from "./ProtectedRoute.tsx";
 
 export default function Profile() {
@@ -34,7 +34,7 @@ export default function Profile() {
                         <Following />
                     </ProtectedRoute>
                 } />
-                <Route path={"Following/:userId"} element={<PublicProfile />} />
+                <Route path={"Following/:userId"} element={<FollowingProfile />} />
             </Routes>
         </div>
     );
