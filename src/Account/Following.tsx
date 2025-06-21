@@ -1,17 +1,22 @@
 import {Button, Table} from "react-bootstrap";
 import * as db from "../Database";
-import {useSelector} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import {useState} from "react";
 import {Link} from "react-router-dom";
+import {unfollowUser} from "./Following/reducer.ts";
 
 export default function Following() {
     const {currentUser} = useSelector((state: any) => state.accountReducer);
+    const dispatch = useDispatch();
     const [users] = useState(db.users);
-    const [following] = useState(db.following);
-    const followingRelationship = following.filter(f => f.user === currentUser._id);
-    //const followingUsers = users.filter(user => currentUser?.following.includes(user._id));
-    const followingUsers = followingRelationship
-        .map(rel => users.find(user => user._id === rel.target))
+    const {following} = useSelector((state: any) => state.followingReducer);
+    // const followingRelationship = following.filter(f => f.user === currentUser._id);
+    // const followingUsers = followingRelationship
+    //     .map(rel => users.find(user => user._id === rel.target))
+    //     .filter(Boolean);
+    const followingUsers = following
+        .filter((f: any) => f.user === currentUser?._id)
+        .map((rel: any) => users.find((user: any) => user._id === rel.target))
         .filter(Boolean);
     if (!currentUser) return null;
     return (
@@ -23,22 +28,7 @@ export default function Following() {
                 </tr>
                 </thead>
                 <tbody>
-                {/*{followingUsers.map((user) => (*/}
-                {/*    <tr key={user._id}>*/}
-                {/*        <td>*/}
-                {/*            <Link to={`/GoodBooks/Account/Profile/Following/${user._id}`}>*/}
-                {/*                {user.username}*/}
-                {/*            </Link>*/}
-                {/*            /!*<Button className={"float-end sn-bg-tan"} id={"sn-user-follow-button"}>*!/*/}
-                {/*            /!*    Follow*!/*/}
-                {/*            /!*</Button>*!/*/}
-                {/*            <Button className={"float-end me-1 btn-danger"} id={"sn-user-unfollow-button"}>*/}
-                {/*                Unfollow*/}
-                {/*            </Button>*/}
-                {/*        </td>*/}
-                {/*    </tr>*/}
-                {/*))}*/}
-                {followingUsers.map((user) => {
+                {followingUsers.map((user: any) => {
                     if (!user) return null;
                     return (
                         <tr key={user._id}>
@@ -46,7 +36,12 @@ export default function Following() {
                                 <Link to={`/GoodBooks/Account/Profile/Following/${user._id}`}>
                                     {user.username}
                                 </Link>
-                                <Button className={"float-end me-1 btn-danger"} id={"sn-user-unfollow-button"}>
+                                <Button className={"float-end me-1 btn-danger"} id={"sn-user-unfollow-button"}
+                                        onClick={(e) => {
+                                            e.preventDefault();
+                                            e.stopPropagation();
+                                            dispatch(unfollowUser({userId: currentUser._id, targetId: user._id}));
+                                        }}>
                                     Unfollow
                                 </Button>
                             </td>

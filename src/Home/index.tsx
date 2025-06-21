@@ -6,6 +6,7 @@ import {useEffect, useState} from "react";
 
 export default function Home() {
     const {currentUser} = useSelector((state: any) => state.accountReducer);
+    const {following} = useSelector((state: any) => state.followingReducer);
     const navigate = useNavigate();
     const handleDetailsClick = (bookId: string) => {
         navigate(`/GoodBooks/Details/${bookId}`);
@@ -18,7 +19,7 @@ export default function Home() {
     };
     const fetchFollowingReviews = () => {
         if (!currentUser) return;
-        const followingIds = db.following.filter(f => f.user === currentUser._id).map(f => f.target);
+        const followingIds = following.filter((f: any) => f.user === currentUser._id).map((f: any) => f.target);
         const reviews = db.reviews.filter(review => followingIds.includes(review.userId));
         const enrichedReviews = reviews.map(review => {
             const book = db.books.find(b => b.googleBooksId === review.bookId);
@@ -35,7 +36,7 @@ export default function Home() {
     useEffect(() => {
         fetchBooks();
         fetchFollowingReviews();
-    }, [currentUser]);
+    }, [currentUser, following]);
     return (
         <div id={"sn-home"} className={"sn-below-header"}>
             {!currentUser && (
@@ -66,6 +67,13 @@ export default function Home() {
                             </Card.Body>
                         </Card>
                     ))}
+                </div>
+            )}
+            {currentUser && followingReviews.length === 0 && (
+                <div>
+                    <h2>Activity</h2>
+                    <p>No recent activity from users you follow</p>
+                    <p>Discover and follow more users to see their reviews!</p>
                 </div>
             )}
             <hr />

@@ -15,7 +15,7 @@ export default function ReviewForm({show, handleClose, dialogTitle}: {
                     //onChange={(e) => setReview(e.target.value)}
                 />
                 Add your review:
-                <FormControl id={"sn-review-modal-text"} placeholder={"Your thoughts"}
+                <FormControl id={"sn-review-modal-text"} placeholder={"Add your thoughts"}
                              //onChange={(e) => setReview(e.target.value)}
                 />
             </Modal.Body>

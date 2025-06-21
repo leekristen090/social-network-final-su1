@@ -1,15 +1,15 @@
 import {Nav} from "react-bootstrap";
 import {Link, useLocation} from "react-router-dom";
-import {useState} from "react";
-import * as db from "../Database";
+
 import {useSelector} from "react-redux";
 
 export default function ProfileTOC() {
     const {pathname} = useLocation();
     const {currentUser} = useSelector((state: any) => state.accountReducer);
     //const [users] = useState(db.users);
-    const [following] = useState(db.following);
-    const followingUsers = following.filter(f => f.user === currentUser?._id);
+    //const [following] = useState(db.following);
+    const {following} = useSelector((state: any) => state.followingReducer);
+    const followingUsers = following.filter((f: any) => f.user === currentUser?._id);
     //const followingUsers = users.filter(user => currentUser?.following.includes(user._id));
     const isViewing = pathname.includes("Following/");
 
