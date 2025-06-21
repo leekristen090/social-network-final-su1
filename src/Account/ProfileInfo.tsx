@@ -6,6 +6,7 @@ import {useEffect, useState} from "react";
 import * as db from "../Database";
 import {useDispatch, useSelector} from "react-redux";
 import {setCurrentUser} from "./reducer.ts";
+import GoalForm from "./GoalForm.tsx";
 
 export default function ProfileInfo() {
     const {currentUser} = useSelector((state: any) => state.accountReducer);
@@ -21,6 +22,9 @@ export default function ProfileInfo() {
         setProfile(currentUser)
     };
     const [goals, setGoals] = useState<any[]>([]);
+    const [show, setShow] = useState(false);
+    const handleClose= () => setShow(false);
+    const handleShow = () => setShow(true);
     const fetchGoals = () => {
         if (!currentUser) return;
         const userGoals = db.goals.filter(goal => goal.user === currentUser._id);
@@ -54,7 +58,7 @@ export default function ProfileInfo() {
                 <Col style={{width: "600px"}}>
                     <div className={"clearfix mt-2"} id={"sn-reading-goals"}>
                         <h2 className={"float-start"}>Reading Goals</h2>
-                        <Button className={"float-end sn-bg-tan"} id={"sn-new-goal"}>
+                        <Button className={"float-end sn-bg-tan"} id={"sn-new-goal"} onClick={handleShow}>
                             <FaPlus /> New Goal
                         </Button>
                     </div>
@@ -76,6 +80,7 @@ export default function ProfileInfo() {
                     </Card>
                 </Col>
             </Row>
+            <GoalForm show={show} handleClose={handleClose} dialogTitle={"Add New Goal"} />
         </div>
     );
 }

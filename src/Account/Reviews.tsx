@@ -4,6 +4,8 @@ import {FaPencil} from "react-icons/fa6";
 import * as db from "../Database";
 import {useSelector} from "react-redux";
 import {Link} from "react-router-dom";
+import {useState} from "react";
+import ReviewForm from "./ReviewForm.tsx";
 
 export default function Reviews() {
     const {currentUser} = useSelector((state: any) => state.accountReducer);
@@ -12,6 +14,9 @@ export default function Reviews() {
         const u = db.books.find(x =>x.googleBooksId === b.bookId);
         return {...b, title: u ? u.title : "Unknown book"}
     });
+    const [show, setShow] = useState(false);
+    const handleClose= () => setShow(false);
+    const handleShow = () => setShow(true);
     if (!reviews) return <div className={"sn-below-header"}>Review not found</div>;
     return (
         <div id={"sn-user-reviews"}>
@@ -19,7 +24,7 @@ export default function Reviews() {
                 <Card.Body>
                     <Card.Title>
                         <h3><b>Your Reviews</b></h3>
-                        <Button className={"sn-bg-tan"}>
+                        <Button className={"sn-bg-tan"} onClick={handleShow}>
                             <FaPlus className={"me-1 mb-1"}/>
                             New Review
                         </Button>
@@ -53,6 +58,7 @@ export default function Reviews() {
                     </Table>
                 </Card.Body>
             </Card>
+            <ReviewForm show={show} handleClose={handleClose} dialogTitle={"Add Review"} />
         </div>
     );
 }

@@ -40,7 +40,7 @@ export default function Home() {
             )}
             {currentUser && followingReviews.length > 0 && (
                 <div id={"sn-following-activity"}>
-                    <h3>Following</h3>
+                    <h2>Activity</h2>
                     {followingReviews.map((review, index) => (
                         <Card key={index} className={"mb-2"} id={"sn-following-review-card"}>
                             <Card.Header className={"sn-bg-tan"}>
@@ -67,11 +67,15 @@ export default function Home() {
             <Row className={"justify-content-center"}>
                 <Col md={6}>
                     <h4>Looking for something new?</h4>
-                    You're in the right place. Find new books today
+                    <p>
+                        You're in the right place. Find new books today
+                    </p>
                 </Col>
                 <Col md={6}>
                     <h4>Connect with other GoodBooks users!</h4>
-                    See what other users are saying their favorite (and least favorite) books are.
+                    <p>
+                        See what other users are saying their favorite (and least favorite) books are.
+                    </p>
                 </Col>
             </Row>
             <hr />
