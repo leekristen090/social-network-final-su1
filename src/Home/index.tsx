@@ -1,5 +1,5 @@
 import {Button, Card, Col, Row} from "react-bootstrap";
-import {useNavigate} from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
 import {useSelector} from "react-redux";
 import * as db from "../Database";
 import {useEffect, useState} from "react";
@@ -18,12 +18,17 @@ export default function Home() {
     };
     const fetchFollowingReviews = () => {
         if (!currentUser) return;
-        const followingIds = currentUser.following;
+        const followingIds = db.following.filter(f => f.user === currentUser._id).map(f => f.target);
         const reviews = db.reviews.filter(review => followingIds.includes(review.userId));
         const enrichedReviews = reviews.map(review => {
             const book = db.books.find(b => b.googleBooksId === review.bookId);
             const user = db.users.find(u => u._id === review.userId);
-            return {...review, bookTitle: book?.title || "Unknown Book", bookCover: book?.coverURL, username: user?.username || "Unknown User"}
+            return {
+                ...review,
+                bookTitle: book?.title || "Unknown Book",
+                bookCover: book?.coverURL,
+                username: user?.username || "Unknown User"
+            };
         });
         setFollowingReviews(enrichedReviews);
     };
@@ -85,8 +90,10 @@ export default function Home() {
                 {localBooks.map((book: any) => (
                     <Col style={{width: "270px"}} key={book.googleBooksId}>
                         <Card id={"sn-book-card"}>
-                            <Card.Img id={"sn-book-card-img"} variant={"top"} src={`${book.coverURL}`}
-                                      width={"100%"} />
+                            <Link to={`/GoodBooks/Details/${book.googleBooksId}`}>
+                                <Card.Img id={"sn-book-card-img"} variant={"top"} src={`${book.coverURL}`}
+                                          width={"100%"} />
+                            </Link>
                             <Card.Body id={"sn-book-card-body"} className={"sn-bg-tan"}>
                                 <Card.Title id={"sn-book-card-title"}>
                                     {book.title}

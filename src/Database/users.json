@@ -7,7 +7,6 @@
     "firstName": "Jane",
     "lastName": "Doe",
     "role": "READER",
-    "following": ["234", "456"],
     "bio": "Books and coffee!",
     "dob": "2000-09-18"
   },
@@ -19,7 +18,6 @@
     "firstName": "John",
     "lastName": "Appleseed",
     "role": "AUTHOR",
-    "following": ["123"],
     "bio": "Writer of mystery novels",
     "dob": "1995-05-10"
   },
@@ -41,7 +39,6 @@
     "firstName": "Kanga",
     "lastName": "Rue",
     "role": "READER",
-    "following": ["123"],
     "bio": "Love reading on a rainy day",
     "dob": "2005-03-21"
   }

@@ -20,7 +20,7 @@ export default function BookDetails() {
                     {book.authors}<br/><br/>
                     <h4><b>Description:</b></h4>
                     {book.description}
-                    book detaisl and stuff
+                    book details and stuff
                     blah bal
                     Lorem ipsum dolor sit amet, consectetur adipisicing elit. Asperiores blanditiis consectetur consequuntur cum earum maxime minima nam quas quidem repellendus, suscipit voluptatibus? Aliquam possimus quibusdam quis quisquam ratione repudiandae veniam?
                 </div>

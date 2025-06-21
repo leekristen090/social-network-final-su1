@@ -7,8 +7,10 @@ import {useSelector} from "react-redux";
 export default function ProfileTOC() {
     const {pathname} = useLocation();
     const {currentUser} = useSelector((state: any) => state.accountReducer);
-    const [users] = useState(db.users);
-    const followingUsers = users.filter(user => currentUser?.following.includes(user._id));
+    //const [users] = useState(db.users);
+    const [following] = useState(db.following);
+    const followingUsers = following.filter(f => f.user === currentUser?._id);
+    //const followingUsers = users.filter(user => currentUser?.following.includes(user._id));
     const isViewing = pathname.includes("Following/");
 
     return (
