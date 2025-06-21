@@ -11,35 +11,73 @@ export default function Home() {
         navigate(`/GoodBooks/Details/${bookId}`);
     };
     const [localBooks, setLocalBooks] = useState<any[]>([]);
+    const [followingReviews, setFollowingReviews] = useState<any[]>([]);
     const fetchBooks = () => {
         const homeBooks = db.books;
         setLocalBooks(homeBooks);
-    }
+    };
+    const fetchFollowingReviews = () => {
+        if (!currentUser) return;
+        const followingIds = currentUser.following;
+        const reviews = db.reviews.filter(review => followingIds.includes(review.userId));
+        const enrichedReviews = reviews.map(review => {
+            const book = db.books.find(b => b.googleBooksId === review.bookId);
+            const user = db.users.find(u => u._id === review.userId);
+            return {...review, bookTitle: book?.title || "Unknown Book", bookCover: book?.coverURL, username: user?.username || "Unknown User"}
+        });
+        setFollowingReviews(enrichedReviews);
+    };
     useEffect(() => {
         fetchBooks();
-    }, []);
+        fetchFollowingReviews();
+    }, [currentUser]);
     return (
         <div id={"sn-home"} className={"sn-below-header"}>
-            <div className={"justify-content-center align-content-center"}>
-                <h1>Welcome to GoodBooks!</h1>
-            </div>
-
+            {!currentUser && (
+                <div className={"justify-content-center align-content-center"}>
+                    <h1>Welcome to GoodBooks!</h1>
+                </div>
+            )}
+            {currentUser && followingReviews.length > 0 && (
+                <div id={"sn-following-activity"}>
+                    <h3>Following</h3>
+                    {followingReviews.map((review, index) => (
+                        <Card key={index} className={"mb-2"} id={"sn-following-review-card"}>
+                            <Card.Header className={"sn-bg-tan"}>
+                                <Button variant={"link"} onClick={() => handleDetailsClick(review.bookId)}>
+                                    <strong>{review.bookTitle}</strong>
+                                </Button>
+                                <small className={"float-end text-muted"}>{new Date(review.timestamp).toLocaleDateString()}</small>
+                            </Card.Header>
+                            <Card.Body>
+                                <blockquote className={"blockquote"}>
+                                    <p>
+                                        {review.text}
+                                    </p>
+                                    <footer className={"blockquote-footer"}>
+                                        {review.username}
+                                    </footer>
+                                </blockquote>
+                            </Card.Body>
+                        </Card>
+                    ))}
+                </div>
+            )}
             <hr />
             <Row className={"justify-content-center"}>
-                <Col>
+                <Col md={6}>
                     <h4>Looking for something new?</h4>
-                    You're in the right place.
+                    You're in the right place. Find new books today
                 </Col>
-                <Col>
+                <Col md={6}>
                     <h4>Connect with other GoodBooks users!</h4>
-                    See what other users are saying are their favorite (and least favorite) books are.
+                    See what other users are saying their favorite (and least favorite) books are.
                 </Col>
             </Row>
-
             <hr />
             <h3>Trending Books</h3>
             <hr />
-            <Row xs={1} md={5} className={"g-4"}>
+            <Row xs={1} md={5} className={"g-4"} id={"sn-home-trending-books"}>
                 {localBooks.map((book: any) => (
                     <Col style={{width: "270px"}} key={book.googleBooksId}>
                         <Card id={"sn-book-card"}>
@@ -62,25 +100,6 @@ export default function Home() {
                 ))}
             </Row>
             <hr/>
-            {currentUser && (
-                <div>
-                    <h3>Following</h3><hr />
-                    reviews from other GoodBooks users you follow
-                    <Card>
-                        <Card.Header className={"sn-bg-tan"}>Book</Card.Header>
-                        <Card.Body>
-                            <blockquote className={"blockquote"}>
-                                <p>
-                                    Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aliquam aperiam at consectetur ea illum, ipsa iusto libero, maiores odio omnis porro praesentium quis totam vero voluptate. Animi corporis error quae?
-                                </p>
-                                <footer className={"blockquote-footer"}>
-                                    user
-                                </footer>
-                            </blockquote>
-                        </Card.Body>
-                    </Card>
-                </div>
-            )}
         </div>
     );
 }
