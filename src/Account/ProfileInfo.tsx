@@ -1,12 +1,13 @@
-import {Button, Card, Col, ProgressBar, Row} from "react-bootstrap";
+import {Button, Card, Col, FormControl, ProgressBar, Row} from "react-bootstrap";
 import {IoSettingsOutline} from "react-icons/io5";
 import {FaPlus} from "react-icons/fa";
 import {useNavigate} from "react-router-dom";
 import {useEffect, useState} from "react";
-import * as db from "../Database";
+//import * as db from "../Database";
 import {useDispatch, useSelector} from "react-redux";
 import {setCurrentUser} from "./reducer.ts";
 import GoalForm from "./GoalForm.tsx";
+import {addGoal, deleteGoal, editGoal, updateGoal} from "./Goals/reducer.ts";
 
 export default function ProfileInfo() {
     const {currentUser} = useSelector((state: any) => state.accountReducer);
@@ -14,24 +15,30 @@ export default function ProfileInfo() {
     const navigate = useNavigate();
     const dispatch = useDispatch();
     const handleSignout = () => {
-        dispatch(setCurrentUser(null));
         navigate("/GoodBooks/Account/Signin");
+        dispatch(setCurrentUser(null));
     };
     const fetchProfile = () => {
         if (!currentUser) return navigate("/GoodBooks/Account/Signin");
         setProfile(currentUser)
     };
-    const [goals, setGoals] = useState<any[]>([]);
+    const [goalName, setGoalName] = useState("");
+    const [percentage, setPercentage] = useState("");
+    const {goals} = useSelector((state: any) => state.goalsReducer);
     const [show, setShow] = useState(false);
     const handleClose= () => setShow(false);
     const handleShow = () => setShow(true);
-    const fetchGoals = () => {
-        if (!currentUser) return;
-        const userGoals = db.goals.filter(goal => goal.user === currentUser._id);
-        setGoals(userGoals);
+    const userGoals = goals.filter((goal: any) => goal.user === currentUser._id);
+    const createGoalForUser = () => {
+        const newGoal = {user: currentUser._id, goalDescription: goalName, percentage: percentage}
+        dispatch(addGoal(newGoal));
+        setGoalName("");
+        setPercentage("");
     };
-    //const [user] = db.users;
-    useEffect(() => { fetchProfile(); fetchGoals(); }, []);
+    const removeGoal = (goalId: string) => {
+        dispatch(deleteGoal(goalId));
+    };
+    useEffect(() => { fetchProfile(); }, []);
     return (
         <div id={"sn-profile-info"}>
             <Row>
@@ -64,23 +71,41 @@ export default function ProfileInfo() {
                     </div>
                     <Card id={"sn-progress-card"}>
                         <Card.Body>
-                            {goals.map((g) => (
-                                <div id={"sn-reading-goal"}>
-                                    <h5 className={"mt-2"}>
-                                        <b>Goal:</b> {g.goalDescription}
-                                        <Button className={"float-end btn-sm btn-danger"}>Delete</Button>
-                                        <Button className={"float-end btn-sm sn-bg-tan me-1"}>Edit Goal</Button>
-                                    </h5>
-                                    <div className={"progress sn-progress-tan"} id={"sn-reading-goal-progress"}>
-                                        <ProgressBar now={g.percentage} label={`${g.percentage}%`} className={"w-100"} />
+                            {userGoals.length > 0 ?  (
+                                userGoals.map((goals: any) => (
+                                    <div id={"sn-reading-goal"}>
+                                        <h5 className={"mt-2"}>
+                                            <b>Goal:</b>
+                                            {!goals.editing && goals.goalDescription}
+                                            {goals.editing && (
+                                                <FormControl defaultValue={goals.goalDescription}
+                                                             onChange={(e) => dispatch(updateGoal({...goals, goalDescription: e.target.value}))}
+                                                             onKeyDown={(e) => {
+                                                                 if (e.key === "Enter") {
+                                                                     dispatch(updateGoal({...goals, editing: false}));
+                                                                 }
+                                                             }} />
+                                            )}
+                                            <Button className={"float-end btn-sm btn-danger"} onClick={() => removeGoal(goals._id)}>
+                                                Delete
+                                            </Button>
+                                            <Button className={"float-end btn-sm sn-bg-tan me-1"} onClick={() => dispatch(editGoal(goals._id))}>
+                                                Edit Goal
+                                            </Button>
+
+                                        </h5>
+                                        <div className={"progress sn-progress-tan"} id={"sn-reading-goal-progress"}>
+                                            <ProgressBar now={goals.percentage} label={`${goals.percentage}%`} className={"w-100"} />
+                                        </div>
                                     </div>
-                                </div>
-                            ))}
+                                ))
+                            ) : <p>No goals yet. Add your first goal!</p>}
                         </Card.Body>
                     </Card>
                 </Col>
             </Row>
-            <GoalForm show={show} handleClose={handleClose} dialogTitle={"Add New Goal"} />
+            <GoalForm show={show} handleClose={handleClose} dialogTitle={"Add New Goal"}
+                      addGoal={createGoalForUser} setGoalName={setGoalName} setProgress={setPercentage} />
         </div>
     );
 }

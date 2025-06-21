@@ -5,6 +5,7 @@ import Reviews from "./Reviews.tsx";
 import Following from "./Following.tsx";
 import ProfileEditor from "./ProfileEditor.tsx";
 import PublicProfile from "./PublicProfile.tsx";
+import ProtectedRoute from "./ProtectedRoute.tsx";
 
 export default function Profile() {
     return (
@@ -13,10 +14,26 @@ export default function Profile() {
             <ProfileTOC />
             <Routes>
                 <Route path={"/"} element={<Navigate to={"User"} />}  />
-                <Route path={"User"} element={<ProfileInfo />} />
-                <Route path={"User/:userId"} element={<ProfileEditor />} />
-                <Route path={"Reviews"} element={<Reviews />} />
-                <Route path={"Following"} element={<Following />} />
+                <Route path={"User"} element={
+                    <ProtectedRoute>
+                        <ProfileInfo />
+                    </ProtectedRoute>
+                } />
+                <Route path={"User/:userId"} element={
+                    <ProtectedRoute>
+                        <ProfileEditor />
+                    </ProtectedRoute>
+                } />
+                <Route path={"Reviews"} element={
+                    <ProtectedRoute>
+                        <Reviews />
+                    </ProtectedRoute>
+                } />
+                <Route path={"Following"} element={
+                    <ProtectedRoute>
+                        <Following />
+                    </ProtectedRoute>
+                } />
                 <Route path={"Following/:userId"} element={<PublicProfile />} />
             </Routes>
         </div>
