@@ -1,9 +1,9 @@
 import {Button, Table} from "react-bootstrap";
-import * as db from "../Database";
+import * as db from "../../Database";
 import {useDispatch, useSelector} from "react-redux";
 import {useState} from "react";
 import {Link} from "react-router-dom";
-import {unfollowUser} from "./Following/reducer.ts";
+import {unfollowUser} from "./reducer.ts";
 
 export default function Following() {
     const {currentUser} = useSelector((state: any) => state.accountReducer);

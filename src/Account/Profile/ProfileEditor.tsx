@@ -2,7 +2,7 @@ import {Alert, Button, Card, FormControl} from "react-bootstrap";
 import {useNavigate, useParams} from "react-router-dom";
 import {useSelector} from "react-redux";
 import {useEffect, useState} from "react";
-import * as db from "../Database";
+import * as db from "../../Database";
 
 export default function ProfileEditor() {
     const {userId} = useParams();

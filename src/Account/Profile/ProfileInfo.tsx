@@ -4,9 +4,9 @@ import {FaPlus} from "react-icons/fa";
 import {useNavigate} from "react-router-dom";
 import {useEffect, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
-import {setCurrentUser} from "./reducer.ts";
-import GoalForm from "./GoalForm.tsx";
-import {addGoal, deleteGoal, editGoal, updateGoal} from "./Goals/reducer.ts";
+import {setCurrentUser} from "../reducer.ts";
+import GoalForm from "../Goals/GoalForm.tsx";
+import {addGoal, deleteGoal, editGoal, updateGoal} from "../Goals/reducer.ts";
 
 export default function ProfileInfo() {
     const {currentUser} = useSelector((state: any) => state.accountReducer);

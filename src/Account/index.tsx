@@ -1,7 +1,7 @@
 import {Navigate, Route, Routes} from "react-router-dom";
 import Login from "../Login";
-import Profile from "./Profile.tsx";
-import Signup from "./Signup.tsx";
+import Profile from "./Profile/Profile.tsx";
+import Signup from "../Login/Signup.tsx";
 import AccountNav from "./AccountNav.tsx";
 import {useSelector} from "react-redux";
 

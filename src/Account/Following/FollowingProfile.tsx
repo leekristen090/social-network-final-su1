@@ -1,5 +1,5 @@
 import {useParams} from "react-router-dom";
-import * as db from "../Database";
+import * as db from "../../Database";
 import {Card, Table} from "react-bootstrap";
 import {useSelector} from "react-redux";
 

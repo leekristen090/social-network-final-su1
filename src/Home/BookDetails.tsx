@@ -70,7 +70,8 @@ export default function BookDetails() {
                 ))}
                 </tbody>
             </Table>
-            <ReviewForm show={show} handleClose={handleClose} dialogTitle={"Add Review"} bookTitle={book.title} />
+            <ReviewForm show={show} handleClose={handleClose}
+                        dialogTitle={"Add Review"} bookTitle={book.title} />
         </div>
     );
 }
