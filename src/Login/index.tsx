@@ -2,16 +2,17 @@ import {Button, FormControl} from "react-bootstrap";
 import {Link, useNavigate} from "react-router-dom";
 import {useState} from "react";
 import {useDispatch} from "react-redux";
-import * as db from "../Database";
+// import * as db from "../Database";
 import {setCurrentUser} from "../Account/reducer.ts";
+import * as usersClient from "../Account/client.ts";
 
 export default function Login() {
     const [credentials, setCredentials] = useState<any>({});
     const dispatch = useDispatch();
     const navigate = useNavigate();
-    const signin = () => {
-        const user = db.users.find(
-            (u: any) => u.username === credentials.username && u.password === credentials.password);
+    const signin = async () => {
+        // const user = db.users.find((u: any) => u.username === credentials.username && u.password === credentials.password);
+        const user = await usersClient.signin(credentials);
         if (!user) return;
         dispatch(setCurrentUser(user));
         navigate("/GoodBooks/Home");

@@ -7,12 +7,12 @@ export default function Footer() {
             Team Members: Kristen Lee |
             <a href={"https://github.com/leekristen090/social-network-final-su1"} target={"_blank"}
                id={"sn-react-git-link"} className={"m-1"}>
-                Frontend GitHub Link
+                Frontend GitHub
             </a>
             <span className={"me-1"}>|</span>
             <a href={"https://github.com/leekristen090/social-network-final-server"}
                target={"_blank"} id={"sn-server-git"}>
-                Server GitHub Link
+                Server GitHub
             </a>
         </Navbar>
     );

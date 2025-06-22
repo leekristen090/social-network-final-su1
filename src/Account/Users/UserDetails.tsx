@@ -16,10 +16,6 @@ export default function UserDetails() {
     const {books} = useSelector((state: any) => state.booksReducer);
     const user = users.find((u: any) => u._id === userId);
     const isFollowing = following.some((f: any) => f.user === currentUser?._id && f.target === userId);
-    // const bookReview = reviews.filter((r: any) => r._id === userId).map((r: any) => {
-    //     const book = books.find((b: any) => b.googleBooksId === r.bookId);
-    //     return {...r, title: book ? book.title : "Unkown Book"}
-    // });
     const userReviews = reviews
         .filter((r: any) => r.userId === userId)
         .map((r: any) => {

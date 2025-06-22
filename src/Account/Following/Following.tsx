@@ -10,10 +10,6 @@ export default function Following() {
     const dispatch = useDispatch();
     const [users] = useState(db.users);
     const {following} = useSelector((state: any) => state.followingReducer);
-    // const followingRelationship = following.filter(f => f.user === currentUser._id);
-    // const followingUsers = followingRelationship
-    //     .map(rel => users.find(user => user._id === rel.target))
-    //     .filter(Boolean);
     const followingUsers = following
         .filter((f: any) => f.user === currentUser?._id)
         .map((rel: any) => users.find((user: any) => user._id === rel.target))

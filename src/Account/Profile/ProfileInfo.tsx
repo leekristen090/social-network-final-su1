@@ -6,38 +6,74 @@ import {useEffect, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import {setCurrentUser} from "../reducer.ts";
 import GoalForm from "../Goals/GoalForm.tsx";
-import {addGoal, deleteGoal, editGoal, updateGoal} from "../Goals/reducer.ts";
+import * as usersClient from "../client.ts"
+import * as goalClient from "../Goals/client.ts";
 
 export default function ProfileInfo() {
     const {currentUser} = useSelector((state: any) => state.accountReducer);
     const [profile, setProfile] = useState<any>({});
+    const [goals, setGoals] = useState<any>({});
     const navigate = useNavigate();
     const dispatch = useDispatch();
-    const handleSignout = () => {
-        navigate("/GoodBooks/Account/Signin");
+    const handleSignout = async () => {
+        await usersClient.signout();
         dispatch(setCurrentUser(null));
+        navigate("/GoodBooks/Account/Signin");
     };
-    const fetchProfile = () => {
-        if (!currentUser) return navigate("/GoodBooks/Account/Signin");
-        setProfile(currentUser)
+    const fetchProfile = async () => {
+        try {
+            const profileData = await usersClient.profile();
+            setProfile(profileData);
+            dispatch(setCurrentUser(profileData));  // update redux as well
+        } catch (e) {
+            navigate("/GoodBooks/Account/Signin");
+        }
     };
     const [goalName, setGoalName] = useState("");
     const [percentage, setPercentage] = useState("");
-    const {goals} = useSelector((state: any) => state.goalsReducer);
     const [show, setShow] = useState(false);
     const handleClose= () => setShow(false);
     const handleShow = () => setShow(true);
-    const userGoals = goals.filter((goal: any) => goal.user === currentUser._id);
-    const createGoalForUser = () => {
-        const newGoal = {user: currentUser._id, goalDescription: goalName, percentage: percentage}
-        dispatch(addGoal(newGoal));
+    const createGoalForUser = async () => {
+        const newGoal = {
+            user: currentUser._id,
+            goalDescription: goalName,
+            percentage: percentage
+        };
+        const createdGoal = await goalClient.createGoal(newGoal);
+        //dispatch(addGoal(createdGoal));
+        setGoals([...goals, createdGoal]);
         setGoalName("");
         setPercentage("");
+        handleClose();
     };
-    const removeGoal = (goalId: string) => {
-        dispatch(deleteGoal(goalId));
+    const removeGoal = async (goalId: string) => {
+        await goalClient.deleteGoal(goalId);
+        //dispatch(deleteGoal(goalId));
+        setGoals(goals.filter((goal: any) => goal._id !== goalId)); // ✅ local state update
+
     };
-    useEffect(() => { fetchProfile(); }, []);
+    const fetchGoals = async () => {
+        if (currentUser?._id) {
+            const userGoals = await goalClient.fetchGoalsForUser(currentUser._id);
+            setGoals(userGoals);
+        }
+    };
+    const saveGoal = async (goal: any) => {
+        const updatedGoal = await goalClient.updateGoal(goal);
+        setGoals(goals.map((g: any) =>
+            g._id === goal._id ? { ...updatedGoal, editing: false } : g
+        ));
+    };
+    const editGoal = (goalId: string) => {
+        setGoals(goals.map((g: any) =>
+            g._id === goalId ? { ...g, editing: true } : g
+        ));
+    };
+    useEffect(() => {
+        fetchProfile();
+        fetchGoals();
+        }, []);
     return (
         <div id={"sn-profile-info"}>
             <Row>
@@ -52,7 +88,8 @@ export default function ProfileInfo() {
                                 {/*Bio*/}
                                 {profile.bio}
                             </Card.Text>
-                            <Button id={"sn-edit-profile-btn"} className={"sn-bg-cream me-2"} onClick={() => navigate(`/GoodBooks/Account/Profile/User/${currentUser._id}`)}>
+                            <Button id={"sn-edit-profile-btn"} className={"sn-bg-cream me-2"}
+                                    onClick={() => navigate(`/GoodBooks/Account/Profile/User/${currentUser._id}`)}>
                                 Edit Profile <IoSettingsOutline />
                             </Button>
                             <Button id={"sn-signout"} variant={"danger"} onClick={handleSignout}>
@@ -70,57 +107,55 @@ export default function ProfileInfo() {
                     </div>
                     <Card id={"sn-progress-card"}>
                         <Card.Body>
-                            {userGoals.length > 0 ?  (
-                                userGoals.map((goals: any) => (
+                            {goals.length > 0 ?  (
+                                goals.map((goal: any) => (
                                     <div id={"sn-reading-goal"}>
                                         <h5 className={"mt-2"}>
                                             <b>Goal:</b>
-                                            {!goals.editing && goals.goalDescription}
-                                            {goals.editing && (
+                                            {!goal.editing && goal.goalDescription}
+                                            {goal.editing && (
                                                 <>
-                                                    <FormControl defaultValue={goals.goalDescription}
+                                                    <FormControl defaultValue={goal.goalDescription}
                                                                  id={"sn-edit-goal-description"}
-                                                               onChange={(e) => dispatch(updateGoal({
-                                                                   ...goals,
-                                                                   goalDescription: e.target.value
-                                                               }))}
+                                                                 onChange={(e) => {
+                                                                     const updatedGoals = goals.map((g: any) =>
+                                                                         g._id === goal._id ? { ...g, goalDescription: e.target.value } : g
+                                                                     );
+                                                                     setGoals(updatedGoals);
+                                                                 }}
                                                                onKeyDown={(e) => {
                                                                    if (e.key === "Enter") {
-                                                                       dispatch(updateGoal({
-                                                                           ...goals,
-                                                                           editing: false
-                                                                       }));
+                                                                       saveGoal(goal);
                                                                    }
                                                                }}/>
                                                     <FormControl type={"number"} min={"0"} max={"100"}
-                                                                 value={goals.percentage} id={"sn-edit-progress"}
-                                                                 onChange={(e) => dispatch(updateGoal({
-                                                                     ...goals,
-                                                                     percentage: e.target.value
-                                                                 }))}
+                                                                 value={goal.percentage} id={"sn-edit-progress"}
+                                                                 onChange={(e) => {
+                                                                     const updatedGoals = goals.map((g: any) =>
+                                                                         g._id === goal._id ? { ...g, percentage: e.target.value } : g
+                                                                     );
+                                                                     setGoals(updatedGoals);
+                                                                 }}
                                                                  onKeyDown={(e) => {
                                                                      if (e.key === "Enter") {
-                                                                         dispatch(updateGoal({
-                                                                             ...goals,
-                                                                             editing: false
-                                                                         }));
+                                                                         saveGoal(goal);
                                                                      }
                                                                  }} />
                                                 </>
                                             )}
                                             <Button className={"float-end btn-sm btn-danger"} id={"sn-delete-goal"}
-                                                    onClick={() => removeGoal(goals._id)}>
+                                                    onClick={() => removeGoal(goal._id)}>
                                                 Delete
                                             </Button>
                                             <Button className={"float-end btn-sm sn-bg-tan me-1"} id={"sn-edit-goal"}
-                                                    onClick={() => dispatch(editGoal(goals._id))}>
+                                                    onClick={() => editGoal(goal._id)}>
                                                 Edit Goal
                                             </Button>
 
                                         </h5>
                                         <div className={"progress sn-progress-tan"} id={"sn-reading-goal-progress"}>
-                                            <ProgressBar now={goals.percentage}
-                                                         label={`${goals.percentage}%`} className={"w-100"}
+                                            <ProgressBar now={goal.percentage}
+                                                         label={`${goal.percentage}%`} className={"w-100"}
                                                          id={"sn-goal-progress-bar"} />
                                         </div>
                                     </div>

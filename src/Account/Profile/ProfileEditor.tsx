@@ -3,6 +3,7 @@ import {useNavigate, useParams} from "react-router-dom";
 import {useDispatch, useSelector} from "react-redux";
 import {useEffect, useState} from "react";
 import {setCurrentUser} from "../reducer.ts";
+import * as usersClient from "../client.ts"
 
 export default function ProfileEditor() {
     const {userId} = useParams();
@@ -14,25 +15,15 @@ export default function ProfileEditor() {
     const handleCancel = () => {
         navigate("/GoodBooks/Account/Profile");
     };
-    const handleSave = () => {
-        dispatch(setCurrentUser(profile));
-        navigate("/GoodBooks/Account/Profile");
-    };
     const fetchProfile = () => {
         if (!currentUser) return navigate("/GoodBooks/Account/Signin");
         setProfile(currentUser);
     };
-    // useEffect(() => {
-    //     if (!userId) {
-    //         navigate("/GoodBooks/Account/Profile");
-    //         return;
-    //     }
-    //     const user = db.users.find(u => u._id === userId);
-    //     if (!user) {
-    //         return;
-    //     }
-    //     setProfile(user);
-    // }, [userId]);
+    const updateProfile = async () => {
+        const updatedProfile = await usersClient.updateUser(profile);
+        dispatch(setCurrentUser(updatedProfile));
+        navigate("/GoodBooks/Account/Profile");
+    };
     useEffect(() => {
         fetchProfile();
     }, []);
@@ -71,7 +62,7 @@ export default function ProfileEditor() {
                 </Card.Body>
                 <Card.Footer>
                     <Button className={"float-end sn-bg-tan"} id={"sn-profile-edit-save-button"}
-                            onClick={handleSave} type={"submit"}>
+                            onClick={updateProfile} type={"submit"}>
                         Save
                     </Button>
                     <Button variant={"danger"} className={"float-end me-1"}
