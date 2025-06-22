@@ -77,24 +77,51 @@ export default function ProfileInfo() {
                                             <b>Goal:</b>
                                             {!goals.editing && goals.goalDescription}
                                             {goals.editing && (
-                                                <FormControl defaultValue={goals.goalDescription}
-                                                             onChange={(e) => dispatch(updateGoal({...goals, goalDescription: e.target.value}))}
-                                                             onKeyDown={(e) => {
-                                                                 if (e.key === "Enter") {
-                                                                     dispatch(updateGoal({...goals, editing: false}));
-                                                                 }
-                                                             }} />
+                                                <>
+                                                    <FormControl defaultValue={goals.goalDescription}
+                                                                 id={"sn-edit-goal-description"}
+                                                               onChange={(e) => dispatch(updateGoal({
+                                                                   ...goals,
+                                                                   goalDescription: e.target.value
+                                                               }))}
+                                                               onKeyDown={(e) => {
+                                                                   if (e.key === "Enter") {
+                                                                       dispatch(updateGoal({
+                                                                           ...goals,
+                                                                           editing: false
+                                                                       }));
+                                                                   }
+                                                               }}/>
+                                                    <FormControl type={"number"} min={"0"} max={"100"}
+                                                                 value={goals.percentage} id={"sn-edit-progress"}
+                                                                 onChange={(e) => dispatch(updateGoal({
+                                                                     ...goals,
+                                                                     percentage: e.target.value
+                                                                 }))}
+                                                                 onKeyDown={(e) => {
+                                                                     if (e.key === "Enter") {
+                                                                         dispatch(updateGoal({
+                                                                             ...goals,
+                                                                             editing: false
+                                                                         }));
+                                                                     }
+                                                                 }} />
+                                                </>
                                             )}
-                                            <Button className={"float-end btn-sm btn-danger"} onClick={() => removeGoal(goals._id)}>
+                                            <Button className={"float-end btn-sm btn-danger"} id={"sn-delete-goal"}
+                                                    onClick={() => removeGoal(goals._id)}>
                                                 Delete
                                             </Button>
-                                            <Button className={"float-end btn-sm sn-bg-tan me-1"} onClick={() => dispatch(editGoal(goals._id))}>
+                                            <Button className={"float-end btn-sm sn-bg-tan me-1"} id={"sn-edit-goal"}
+                                                    onClick={() => dispatch(editGoal(goals._id))}>
                                                 Edit Goal
                                             </Button>
 
                                         </h5>
                                         <div className={"progress sn-progress-tan"} id={"sn-reading-goal-progress"}>
-                                            <ProgressBar now={goals.percentage} label={`${goals.percentage}%`} className={"w-100"} />
+                                            <ProgressBar now={goals.percentage}
+                                                         label={`${goals.percentage}%`} className={"w-100"}
+                                                         id={"sn-goal-progress-bar"} />
                                         </div>
                                     </div>
                                 ))

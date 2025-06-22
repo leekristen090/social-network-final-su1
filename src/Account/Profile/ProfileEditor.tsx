@@ -1,32 +1,41 @@
 import {Alert, Button, Card, FormControl} from "react-bootstrap";
 import {useNavigate, useParams} from "react-router-dom";
-import {useSelector} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import {useEffect, useState} from "react";
-import * as db from "../../Database";
+import {setCurrentUser} from "../reducer.ts";
 
 export default function ProfileEditor() {
     const {userId} = useParams();
     const {currentUser} = useSelector((state: any) => state.accountReducer);
     const [profile, setProfile] = useState<any>({});
     const navigate = useNavigate();
+    const dispatch = useDispatch();
     const isEditable = currentUser && (currentUser._id === userId || currentUser.role === "ADMIN");
     const handleCancel = () => {
         navigate("/GoodBooks/Account/Profile");
     };
     const handleSave = () => {
+        dispatch(setCurrentUser(profile));
         navigate("/GoodBooks/Account/Profile");
     };
+    const fetchProfile = () => {
+        if (!currentUser) return navigate("/GoodBooks/Account/Signin");
+        setProfile(currentUser);
+    };
+    // useEffect(() => {
+    //     if (!userId) {
+    //         navigate("/GoodBooks/Account/Profile");
+    //         return;
+    //     }
+    //     const user = db.users.find(u => u._id === userId);
+    //     if (!user) {
+    //         return;
+    //     }
+    //     setProfile(user);
+    // }, [userId]);
     useEffect(() => {
-        if (!userId) {
-            navigate("/GoodBooks/Account/Profile");
-            return;
-        }
-        const user = db.users.find(u => u._id === userId);
-        if (!user) {
-            return;
-        }
-        setProfile(user);
-    }, [userId]);
+        fetchProfile();
+    }, []);
     if (!isEditable) {
         return (
             <Alert variant="danger">
@@ -57,7 +66,8 @@ export default function ProfileEditor() {
                     <FormControl type={"text"} placeholder={"last name"} id={"sn-last-name"} defaultValue={profile.lastName}
                                  onChange={(e) => setProfile({...profile, lastName: e.target.value})} /><br/>
                     Date of Birth:
-                    <FormControl type={"date"} placeholder={"2020-01-01"} id={"sn-dob"} defaultValue={profile.dob} />
+                    <FormControl type={"date"} placeholder={"2020-01-01"} id={"sn-dob"} defaultValue={profile.dob}
+                                 onChange={(e) => setProfile({...profile, dob: e.target.value})} />
                 </Card.Body>
                 <Card.Footer>
                     <Button className={"float-end sn-bg-tan"} id={"sn-profile-edit-save-button"}

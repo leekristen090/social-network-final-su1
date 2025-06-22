@@ -53,4 +53,3 @@ export default tseslint.config({
 })
 ```
 # social-network-final-su1
-# social-network-final-su1
