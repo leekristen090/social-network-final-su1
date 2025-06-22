@@ -1,8 +1,8 @@
 import {Button, FormControl, Modal} from "react-bootstrap";
 
-export default function ReviewForm({show, handleClose, dialogTitle, bookTitle}: {
+export default function ReviewForm({show, handleClose, dialogTitle, bookTitle, addReview, setReview}: {
     show: boolean; handleClose: () => void; dialogTitle: string; bookTitle: string;
-    //addReview: () => void; setReview: (description: string) => void;
+    addReview: () => void; setReview: (description: string) => void;
 }) {
     return (
         <Modal show={show} onHide={handleClose} id={"sn-review-form"}>
@@ -13,11 +13,11 @@ export default function ReviewForm({show, handleClose, dialogTitle, bookTitle}: 
                 Book title:
                 <FormControl id={"sn-review-modal-text-search"} placeholder={"Search for a book to review"}
                              defaultValue={bookTitle}
-                    //onChange={(e) => setReview(e.target.value)}
+                    onChange={(e) => setReview(e.target.value)}
                 />
                 Add your review:
                 <FormControl id={"sn-review-modal-text"} placeholder={"Add your thoughts"} as={"textarea"}
-                             //onChange={(e) => setReview(e.target.value)}
+                             onChange={(e) => setReview(e.target.value)}
                 />
             </Modal.Body>
             <Modal.Footer>
@@ -25,7 +25,7 @@ export default function ReviewForm({show, handleClose, dialogTitle, bookTitle}: 
                     Cancel
                 </Button>
                 <Button onClick={() => {
-                    //addReview();
+                    addReview();
                     handleClose();}} className={"sn-bg-tan"} id={"sn-review-add-button"}>
                     Add Review
                 </Button>

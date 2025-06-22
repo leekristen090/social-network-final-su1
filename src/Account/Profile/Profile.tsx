@@ -1,7 +1,7 @@
 import ProfileTOC from "./ProfileTOC.tsx";
 import {Navigate, Route, Routes} from "react-router-dom";
 import ProfileInfo from "./ProfileInfo.tsx";
-import Reviews from "../Reviews.tsx";
+import Reviews from "../Reviews/Reviews.tsx";
 import Following from "../Following/Following.tsx";
 import ProfileEditor from "./ProfileEditor.tsx";
 import FollowingProfile from "../Following/FollowingProfile.tsx";

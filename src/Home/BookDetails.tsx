@@ -1,23 +1,26 @@
 import {useNavigate, useParams} from "react-router-dom";
-import * as db from "../Database";
 import {Button, Table} from "react-bootstrap";
 import {FaPlus} from "react-icons/fa";
 import {useState} from "react";
-import ReviewForm from "../Account/ReviewForm.tsx";
-import {useSelector} from "react-redux";
+import ReviewForm from "../Account/Reviews/ReviewForm.tsx";
+import {useDispatch, useSelector} from "react-redux";
+import {addReview} from "../Account/Reviews/reducer.ts";
 
 export default function BookDetails() {
     const {bid} = useParams();
     const {books} = useSelector((state: any) => state.booksReducer);
     const {users} = useSelector((state: any) => state.usersReducer);
+    const {reviews} = useSelector((state: any) => state.reviewsReducer);
     const {currentUser} = useSelector((state: any) => state.accountReducer);
     const navigate = useNavigate();
+    const dispatch = useDispatch();
     const book = books.find((b: any) => b.googleBooksId === bid);
-    const bookReviews = db.reviews.filter(r => r.bookId === bid);
-    const reviewer = bookReviews.map(review =>{
+    const bookReviews = reviews.filter((r: any) => r.bookId === bid);
+    const reviewer = bookReviews.map((review: any) => {
         const r = users.find((user: any) => user._id === review.userId);
         return {...review, username: r ? r.username : "Unknown User"}
     });
+    const [reviewText, setReviewText] = useState("");
     const [show, setShow] = useState(false);
     const handleClose= () => setShow(false);
     const handleShow = () => {
@@ -26,6 +29,17 @@ export default function BookDetails() {
         } else {
             navigate("/GoodBooks/Account/Signin");
         }
+    };
+    const handleAddReview = () => {
+        if (!currentUser) return;
+        dispatch(addReview({
+            bookId: bid,
+            userId: currentUser._id,
+            text: reviewText,
+            timestamp: Date.now()
+        }));
+        setReviewText("");
+        setShow(false);
     };
     if (!book) return <div className={"sn-below-header"}>Book not found</div>;
     return (
@@ -71,7 +85,8 @@ export default function BookDetails() {
                 </tbody>
             </Table>
             <ReviewForm show={show} handleClose={handleClose}
-                        dialogTitle={"Add Review"} bookTitle={book.title} />
+                        dialogTitle={"Add Review"} bookTitle={book.title}
+                        setReview={setReviewText} addReview={handleAddReview} />
         </div>
     );
 }

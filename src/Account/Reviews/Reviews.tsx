@@ -1,17 +1,23 @@
-import { Card, Table} from "react-bootstrap";
+import {Card, FormControl, Table} from "react-bootstrap";
 import {FaTrash} from "react-icons/fa";
 import {FaPencil} from "react-icons/fa6";
-import * as db from "../Database";
-import {useSelector} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import {Link} from "react-router-dom";
+import {deleteReview, editReview, updateReview} from "./reducer.ts";
 
 export default function Reviews() {
     const {currentUser} = useSelector((state: any) => state.accountReducer);
-    const reviews = db.reviews.filter(r => r.userId === currentUser._id);
-    const book = reviews.map(b => {
-        const u = db.books.find(x =>x.googleBooksId === b.bookId);
+    const dispatch = useDispatch();
+    const {reviews} = useSelector((state: any) => state.reviewsReducer);
+    const {books} = useSelector((state: any) => state.booksReducer);
+    const review = reviews.filter((r: any) => r.userId === currentUser._id);
+    const book = review.map((b: any) => {
+        const u = books.find((x: any) => x.googleBooksId === b.bookId);
         return {...b, title: u ? u.title : "Unknown book"}
     });
+    const removeReview = (reviewId: string) => {
+        dispatch(deleteReview(reviewId));
+    };
     // const [show, setShow] = useState(false);
     // const handleClose= () => setShow(false);
     // const handleShow = () => setShow(true);
@@ -44,11 +50,23 @@ export default function Reviews() {
                                         {review.title}
                                     </Link>
                                 </td>
-                                <td>{review.text}</td>
+                                <td>
+                                    {/*{review.text}*/}
+                                    {!review.editing && review.text}
+                                    {review.editing && (
+                                        <FormControl defaultValue={review.text}
+                                                     onChange={(e) => dispatch(updateReview({...review, text: e.target.value}))}
+                                                     onKeyDown={(e) => {
+                                                         if (e.key === "Enter") {
+                                                             dispatch(updateReview({...review, editing: false, timestamp: Date.now()}));
+                                                         }
+                                                     }} />
+                                    )}
+                                </td>
                                 <td>{new Date(review.timestamp).toLocaleDateString()}</td>
                                 <td>
-                                    <FaPencil  className={"fs-4 me-2"} />
-                                    <FaTrash className={"text-danger fs-4"} />
+                                    <FaPencil  className={"fs-4 me-2"} onClick={() => dispatch(editReview(review._id))} />
+                                    <FaTrash className={"text-danger fs-4"} onClick={() => removeReview(review._id)} />
                                 </td>
                             </tr>
                         ))}

@@ -4,6 +4,7 @@ import goalsReducer from "./Account/Goals/reducer.ts";
 import followingReducer from "./Account/Following/reducer.ts";
 import booksReducer from "./Home/Books/reducer.ts";
 import usersReducer from "./Account/Users/reducer.ts";
+import reviewsReducer from "./Account/Reviews/reducer.ts";
 
 const store = configureStore({
     reducer: {
@@ -11,7 +12,8 @@ const store = configureStore({
         goalsReducer,
         followingReducer,
         booksReducer,
-        usersReducer
+        usersReducer,
+        reviewsReducer
     },
 });
 export default store;
