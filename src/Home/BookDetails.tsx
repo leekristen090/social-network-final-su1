@@ -1,10 +1,11 @@
-import {useNavigate, useParams} from "react-router-dom";
+import {Link, useNavigate, useParams} from "react-router-dom";
 import {Button, Table} from "react-bootstrap";
 import {FaPlus} from "react-icons/fa";
 import {useState} from "react";
 import ReviewForm from "../Account/Reviews/ReviewForm.tsx";
 import {useDispatch, useSelector} from "react-redux";
 import {addReview} from "../Account/Reviews/reducer.ts";
+import {Outlet} from "react-router";
 
 export default function BookDetails() {
     const {bid} = useParams();
@@ -77,7 +78,11 @@ export default function BookDetails() {
                 <tbody>
                 {reviewer.map((review: any) => (
                     <tr key={review._id}>
-                        <td>{review.username}</td>
+                        <td>
+                            <Link to={`User/${review.userId}`}>
+                                {review.username}
+                            </Link>
+                        </td>
                         <td>{review.text}</td>
                         <td>{new Date(review.timestamp).toLocaleDateString()}</td>
                     </tr>
@@ -87,6 +92,7 @@ export default function BookDetails() {
             <ReviewForm show={show} handleClose={handleClose}
                         dialogTitle={"Add Review"} bookTitle={book.title}
                         setReview={setReviewText} addReview={handleAddReview} />
+            <Outlet />
         </div>
     );
 }
