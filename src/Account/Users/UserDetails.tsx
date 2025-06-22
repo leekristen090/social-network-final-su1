@@ -1,14 +1,36 @@
 import {Link, useNavigate, useParams} from "react-router-dom";
 import {IoCloseSharp} from "react-icons/io5";
-import {useSelector} from "react-redux";
-import {Button} from "react-bootstrap";
+import {useDispatch, useSelector} from "react-redux";
+import {Button, Table} from "react-bootstrap";
+import {useEffect} from "react";
+import {followUser, unfollowUser} from "../Following/reducer.ts";
 
 export default function UserDetails() {
     const navigate = useNavigate();
+    const dispatch = useDispatch();
     const {userId} = useParams();
     const {currentUser} = useSelector((state: any) => state.accountReducer);
     const {users} = useSelector((state: any) => state.usersReducer);
+    const {following} = useSelector((state: any) => state.followingReducer);
+    const {reviews} = useSelector((state: any) => state.reviewsReducer);
+    const {books} = useSelector((state: any) => state.booksReducer);
     const user = users.find((u: any) => u._id === userId);
+    const isFollowing = following.some((f: any) => f.user === currentUser?._id && f.target === userId);
+    // const bookReview = reviews.filter((r: any) => r._id === userId).map((r: any) => {
+    //     const book = books.find((b: any) => b.googleBooksId === r.bookId);
+    //     return {...r, title: book ? book.title : "Unkown Book"}
+    // });
+    const userReviews = reviews
+        .filter((r: any) => r.userId === userId)
+        .map((r: any) => {
+            const book = books.find((b: any) => b.googleBooksId === r.bookId);
+            return { ...r, bookTitle: book ? book.title : "Unknown Book" };
+        });
+    useEffect(() => {
+        if (currentUser && currentUser._id === userId) {
+            navigate("/GoodBooks/Account/Profile");
+        }
+    }, [currentUser, userId]);
     return (
         <div id={"sn-user-details"} className={"sn-below-header position-fixed top-0 end-0 bottom-0 bg-white p-4 shadow w-25"}>
             <div>
@@ -25,9 +47,41 @@ export default function UserDetails() {
             <hr />
             {currentUser && (
                 <div>
-                    <h5><b>Bio:</b></h5>
-                    {user.bio}
-                    <Button className={"float-end sn-bg-tan"}>Follow</Button>
+                    <div>
+                        <h5><b>Bio:</b></h5>
+                        {user.bio}
+                        <Button className={`float-end ${isFollowing ? "btn-danger" : "sn-bg-tan"}`} onClick={() => {
+                            if (isFollowing) {
+                                dispatch(unfollowUser({userId: currentUser._id, targetId: userId}));
+                            } else {
+                                dispatch(followUser({userId: currentUser._id, targetId: user._id}));
+                            }
+                        }}>
+                            {isFollowing ? "Unfollow" : "Follow"}
+                        </Button>
+                    </div>
+                    <br/><br/><hr/>
+                    <div>
+                        <h5>User Reviews:</h5>
+                        <Table striped>
+                            <thead>
+                            <tr>
+                                <th>Book</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {userReviews.map((r: any) => (
+                                <tr key={r._id}>
+                                    <td>
+                                        <Link to={`/GoodBooks/Details/${r.bookId}`}>
+                                            {r.bookTitle}
+                                        </Link>
+                                    </td>
+                                </tr>
+                            ))}
+                            </tbody>
+                        </Table>
+                    </div>
                 </div>
             )}
             {!currentUser && (
