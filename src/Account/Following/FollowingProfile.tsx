@@ -1,4 +1,4 @@
-import {useParams} from "react-router-dom";
+import {Link, useParams} from "react-router-dom";
 import * as db from "../../Database";
 import {Card, Table} from "react-bootstrap";
 import {useSelector} from "react-redux";
@@ -35,7 +35,12 @@ export default function FollowingProfile() {
                         <tbody>
                         {book.map((review: any) => (
                             <tr>
-                                <td>{review.title}</td>
+                                <td>
+                                    <Link to={`/GoodBooks/Details/${review.bookId}`}>
+                                        {review.title}
+                                    </Link>
+
+                                </td>
                                 <td>{review.text}</td>
                                 <td>{new Date(review.timestamp).toLocaleDateString()}</td>
                             </tr>

@@ -24,7 +24,7 @@ export default function ProfileInfo() {
         try {
             const profileData = await usersClient.profile();
             setProfile(profileData);
-            dispatch(setCurrentUser(profileData));  // update redux as well
+            dispatch(setCurrentUser(profileData));
         } catch (e) {
             navigate("/GoodBooks/Account/Signin");
         }
@@ -70,10 +70,17 @@ export default function ProfileInfo() {
             g._id === goalId ? { ...g, editing: true } : g
         ));
     };
+    // useEffect(() => {
+    //     fetchProfile();
+    //     fetchGoals();
+    //     }, []);
     useEffect(() => {
-        fetchProfile();
-        fetchGoals();
-        }, []);
+        const loadData = async () => {
+            await fetchProfile();   // ensures currentUser is in Redux
+            await fetchGoals();     // now currentUser._id is available
+        };
+        loadData();
+    }, []);
     return (
         <div id={"sn-profile-info"}>
             <Row>
