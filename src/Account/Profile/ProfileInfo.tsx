@@ -50,7 +50,7 @@ export default function ProfileInfo() {
     const removeGoal = async (goalId: string) => {
         await goalClient.deleteGoal(goalId);
         //dispatch(deleteGoal(goalId));
-        setGoals(goals.filter((goal: any) => goal._id !== goalId)); // ✅ local state update
+        setGoals(goals.filter((goal: any) => goal._id !== goalId));
 
     };
     const fetchGoals = async () => {
@@ -76,8 +76,8 @@ export default function ProfileInfo() {
     //     }, []);
     useEffect(() => {
         const loadData = async () => {
-            await fetchProfile();   // ensures currentUser is in Redux
-            await fetchGoals();     // now currentUser._id is available
+            await fetchProfile();
+            await fetchGoals();
         };
         loadData();
     }, []);
@@ -132,7 +132,11 @@ export default function ProfileInfo() {
                                                                  }}
                                                                onKeyDown={(e) => {
                                                                    if (e.key === "Enter") {
-                                                                       saveGoal(goal);
+                                                                       // saveGoal(goal);
+                                                                       const latestGoal = goals.find((g: any) => g._id === goal._id);
+                                                                       if (latestGoal) {
+                                                                           saveGoal({...latestGoal, editing: false});
+                                                                       }
                                                                    }
                                                                }}/>
                                                     <FormControl type={"number"} min={"0"} max={"100"}
@@ -145,7 +149,11 @@ export default function ProfileInfo() {
                                                                  }}
                                                                  onKeyDown={(e) => {
                                                                      if (e.key === "Enter") {
-                                                                         saveGoal(goal);
+                                                                         //saveGoal(goal);
+                                                                         const latestGoal = goals.find((g: any) => g._id === goal._id);
+                                                                         if (latestGoal) {
+                                                                             saveGoal({...latestGoal, editing: false});
+                                                                         }
                                                                      }
                                                                  }} />
                                                 </>

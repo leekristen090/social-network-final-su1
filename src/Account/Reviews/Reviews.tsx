@@ -1,39 +1,66 @@
-import {Card, FormControl, Table} from "react-bootstrap";
-import {FaTrash} from "react-icons/fa";
-import {FaPencil} from "react-icons/fa6";
-import {useDispatch, useSelector} from "react-redux";
-import {Link} from "react-router-dom";
-import {deleteReview, editReview, updateReview} from "./reducer.ts";
+import { useEffect, useState } from "react";
+import { Card, FormControl, Table } from "react-bootstrap";
+import { FaTrash } from "react-icons/fa";
+import { FaPencil } from "react-icons/fa6";
+import { useSelector } from "react-redux";
+import { Link } from "react-router-dom";
+import * as reviewClient from "./client";
 
 export default function Reviews() {
-    const {currentUser} = useSelector((state: any) => state.accountReducer);
-    const dispatch = useDispatch();
-    const {reviews} = useSelector((state: any) => state.reviewsReducer);
-    const {books} = useSelector((state: any) => state.booksReducer);
-    const review = reviews.filter((r: any) => r.userId === currentUser._id);
-    const book = review.map((b: any) => {
-        const u = books.find((x: any) => x.googleBooksId === b.bookId);
-        return {...b, title: u ? u.title : "Unknown book"}
-    });
-    const removeReview = (reviewId: string) => {
-        dispatch(deleteReview(reviewId));
+    const { currentUser } = useSelector((state: any) => state.accountReducer);
+    const { books } = useSelector((state: any) => state.booksReducer);
+    const [reviews, setReviews] = useState<any[]>([]);
+
+    const loadReviews = async () => {
+        if (currentUser?._id) {
+            const fetched = await reviewClient.fetchReviewsForUser(currentUser._id);
+            const reviewsWithEditing = fetched.map((r: any) => ({ ...r, editing: false }));
+            setReviews(reviewsWithEditing);
+        }
     };
-    // const [show, setShow] = useState(false);
-    // const handleClose= () => setShow(false);
-    // const handleShow = () => setShow(true);
-    if (!reviews) return <div className={"sn-below-header"}>Review not found</div>;
+    useEffect(() => {
+        loadReviews();
+    }, [currentUser]);
+
+    const removeReview = async (reviewId: string) => {
+        await reviewClient.deleteReview(reviewId);
+        setReviews(reviews.filter((r) => r._id !== reviewId));
+    };
+    const toggleEdit = (reviewId: string) => {
+        setReviews(reviews.map((r) =>
+            r._id === reviewId ? { ...r, editing: !r.editing } : r
+        ));
+    };
+    const updateText = (reviewId: string, text: string) => {
+        setReviews(reviews.map((r) =>
+            r._id === reviewId ? { ...r, text } : r
+        ));
+    };
+    const saveReview = async (review: any) => {
+        const updated = {
+            ...review,
+            editing: false,
+            timestamp: Date.now()
+        };
+        await reviewClient.updateReview(updated);
+        setReviews(reviews.map((r) =>
+            r._id === review._id ? updated : r
+        ));
+    };
+    const reviewsWithTitles = reviews.map((r: any) => {
+        const book = books.find((b: any) => b.googleBooksId === r.bookId);
+        return { ...r, title: book ? book.title : "Unknown Book" };
+    });
+    if (!currentUser) return <div className={"sn-below-header"}>You must be signed in to view reviews.</div>;
+
     return (
         <div id={"sn-user-reviews"}>
             <Card>
                 <Card.Body>
                     <Card.Title>
                         <h3><b>Your Reviews</b></h3>
-                        {/*<Button className={"sn-bg-tan"} onClick={handleShow}>*/}
-                        {/*    <FaPlus className={"me-1 mb-1"}/>*/}
-                        {/*    New Review*/}
-                        {/*</Button>*/}
                     </Card.Title>
-                    <Table striped style={{width: "550px"}}>
+                    <Table striped style={{ width: "550px" }}>
                         <thead>
                         <tr>
                             <th>Book</th>
@@ -43,7 +70,7 @@ export default function Reviews() {
                         </tr>
                         </thead>
                         <tbody>
-                        {book.map((review: any) => (
+                        {reviewsWithTitles.map((review: any) => (
                             <tr key={review._id}>
                                 <td>
                                     <Link to={`/GoodBooks/Details/${review.bookId}`}>
@@ -51,22 +78,31 @@ export default function Reviews() {
                                     </Link>
                                 </td>
                                 <td>
-                                    {/*{review.text}*/}
                                     {!review.editing && review.text}
                                     {review.editing && (
-                                        <FormControl defaultValue={review.text}
-                                                     onChange={(e) => dispatch(updateReview({...review, text: e.target.value}))}
-                                                     onKeyDown={(e) => {
-                                                         if (e.key === "Enter") {
-                                                             dispatch(updateReview({...review, editing: false, timestamp: Date.now()}));
-                                                         }
-                                                     }} />
+                                        <FormControl
+                                            value={review.text}
+                                            onChange={(e) =>
+                                                updateText(review._id, e.target.value)
+                                            }
+                                            onKeyDown={(e) => {
+                                                if (e.key === "Enter") {
+                                                    saveReview(review);
+                                                }
+                                            }}
+                                        />
                                     )}
                                 </td>
                                 <td>{new Date(review.timestamp).toLocaleDateString()}</td>
                                 <td>
-                                    <FaPencil  className={"fs-4 me-2"} onClick={() => dispatch(editReview(review._id))} />
-                                    <FaTrash className={"text-danger fs-4"} onClick={() => removeReview(review._id)} />
+                                    <FaPencil
+                                        className={"fs-4 me-2"}
+                                        onClick={() => toggleEdit(review._id)}
+                                    />
+                                    <FaTrash
+                                        className={"text-danger fs-4"}
+                                        onClick={() => removeReview(review._id)}
+                                    />
                                 </td>
                             </tr>
                         ))}
@@ -74,7 +110,6 @@ export default function Reviews() {
                     </Table>
                 </Card.Body>
             </Card>
-            {/*<ReviewForm show={show} handleClose={handleClose} dialogTitle={"Add Review"} />*/}
         </div>
     );
 }

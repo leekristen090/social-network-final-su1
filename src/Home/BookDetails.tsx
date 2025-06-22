@@ -1,28 +1,24 @@
 import {Link, useNavigate, useParams} from "react-router-dom";
 import {Button, Table} from "react-bootstrap";
 import {FaPlus} from "react-icons/fa";
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import ReviewForm from "../Account/Reviews/ReviewForm.tsx";
-import {useDispatch, useSelector} from "react-redux";
-import {addReview} from "../Account/Reviews/reducer.ts";
+import {useSelector} from "react-redux";
 import {Outlet} from "react-router";
+import * as reviewClient from "../Account/Reviews/client.ts";
 
 export default function BookDetails() {
     const {bid} = useParams();
     const {books} = useSelector((state: any) => state.booksReducer);
     const {users} = useSelector((state: any) => state.usersReducer);
-    const {reviews} = useSelector((state: any) => state.reviewsReducer);
     const {currentUser} = useSelector((state: any) => state.accountReducer);
     const navigate = useNavigate();
-    const dispatch = useDispatch();
+
     const book = books.find((b: any) => b.googleBooksId === bid);
-    const bookReviews = reviews.filter((r: any) => r.bookId === bid);
-    const reviewer = bookReviews.map((review: any) => {
-        const r = users.find((user: any) => user._id === review.userId);
-        return {...review, username: r ? r.username : "Unknown User"}
-    });
+
     const [reviewText, setReviewText] = useState("");
     const [show, setShow] = useState(false);
+    const [bookReviews, setBookReviews] = useState<any[]>([]);
     const handleClose= () => setShow(false);
     const handleShow = () => {
         if (currentUser) {
@@ -31,17 +27,31 @@ export default function BookDetails() {
             navigate("/GoodBooks/Account/Signin");
         }
     };
-    const handleAddReview = () => {
+    const handleAddReview = async () => {
         if (!currentUser) return;
-        dispatch(addReview({
+        const newReview = await reviewClient.createReview({
             bookId: bid,
             userId: currentUser._id,
             text: reviewText,
             timestamp: Date.now()
-        }));
+        });
+        setBookReviews([...bookReviews, newReview]);
         setReviewText("");
         setShow(false);
     };
+    const reviewer = bookReviews.map((review: any) => {
+        const r = users.find((user: any) => user._id === review.userId);
+        return {...review, username: r ? r.username : "Unknown User"};
+    });
+    const fetchBookReviews = async () => {
+        if (bid) {
+            const reviews = await reviewClient.fetchReviewsForBook(bid);
+            setBookReviews(reviews);
+        }
+    };
+    useEffect(() => {
+        fetchBookReviews();
+    }, [bid]);
     if (!book) return <div className={"sn-below-header"}>Book not found</div>;
     return (
         <div id={"sn-book-details"} className={"sn-below-header"}>
