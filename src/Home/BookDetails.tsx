@@ -1,4 +1,4 @@
-import {useParams} from "react-router-dom";
+import {useNavigate, useParams} from "react-router-dom";
 import * as db from "../Database";
 import {Button, Table} from "react-bootstrap";
 import {FaPlus} from "react-icons/fa";
@@ -10,6 +10,8 @@ export default function BookDetails() {
     const {bid} = useParams();
     const {books} = useSelector((state: any) => state.booksReducer);
     const {users} = useSelector((state: any) => state.usersReducer);
+    const {currentUser} = useSelector((state: any) => state.accountReducer);
+    const navigate = useNavigate();
     const book = books.find((b: any) => b.googleBooksId === bid);
     const bookReviews = db.reviews.filter(r => r.bookId === bid);
     const reviewer = bookReviews.map(review =>{
@@ -18,7 +20,13 @@ export default function BookDetails() {
     });
     const [show, setShow] = useState(false);
     const handleClose= () => setShow(false);
-    const handleShow = () => setShow(true);
+    const handleShow = () => {
+        if (currentUser) {
+            setShow(true);
+        } else {
+            navigate("/GoodBooks/Account/Signin");
+        }
+    };
     if (!book) return <div className={"sn-below-header"}>Book not found</div>;
     return (
         <div id={"sn-book-details"} className={"sn-below-header"}>
@@ -62,7 +70,7 @@ export default function BookDetails() {
                 ))}
                 </tbody>
             </Table>
-            <ReviewForm show={show} handleClose={handleClose} dialogTitle={"Add Review"} />
+            <ReviewForm show={show} handleClose={handleClose} dialogTitle={"Add Review"} bookTitle={book.title} />
         </div>
     );
 }

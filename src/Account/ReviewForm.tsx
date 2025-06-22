@@ -1,7 +1,7 @@
 import {Button, FormControl, Modal} from "react-bootstrap";
 
-export default function ReviewForm({show, handleClose, dialogTitle}: {
-    show: boolean; handleClose: () => void; dialogTitle: string;
+export default function ReviewForm({show, handleClose, dialogTitle, bookTitle}: {
+    show: boolean; handleClose: () => void; dialogTitle: string; bookTitle: string;
     //addReview: () => void; setReview: (description: string) => void;
 }) {
     return (
@@ -12,10 +12,11 @@ export default function ReviewForm({show, handleClose, dialogTitle}: {
             <Modal.Body id={"sn-review-modal-body"}>
                 Book title:
                 <FormControl id={"sn-review-modal-text-search"} placeholder={"Search for a book to review"}
+                             defaultValue={bookTitle}
                     //onChange={(e) => setReview(e.target.value)}
                 />
                 Add your review:
-                <FormControl id={"sn-review-modal-text"} placeholder={"Add your thoughts"}
+                <FormControl id={"sn-review-modal-text"} placeholder={"Add your thoughts"} as={"textarea"}
                              //onChange={(e) => setReview(e.target.value)}
                 />
             </Modal.Body>
