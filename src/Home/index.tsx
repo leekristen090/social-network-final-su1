@@ -3,10 +3,12 @@ import {Link, useNavigate} from "react-router-dom";
 import {useSelector} from "react-redux";
 import * as db from "../Database";
 import {useEffect, useState} from "react";
+import * as followingClient from "../Account/Following/client.ts";
+import * as reviewClient from "../Account/Reviews/client.ts";
 
 export default function Home() {
     const {currentUser} = useSelector((state: any) => state.accountReducer);
-    const {following} = useSelector((state: any) => state.followingReducer);
+    //const {following} = useSelector((state: any) => state.followingReducer);
     const navigate = useNavigate();
     const handleDetailsClick = (bookId: string) => {
         navigate(`/GoodBooks/Details/${bookId}`);
@@ -17,11 +19,16 @@ export default function Home() {
         const homeBooks = db.books;
         setLocalBooks(homeBooks);
     };
-    const fetchFollowingReviews = () => {
+    const fetchFollowingReviews = async () => {
         if (!currentUser) return;
+        const following = await followingClient.fetchFollowing(currentUser._id);
         const followingIds = following.filter((f: any) => f.user === currentUser._id).map((f: any) => f.target);
-        const reviews = db.reviews.filter(review => followingIds.includes(review.userId));
-        const enrichedReviews = reviews.map(review => {
+        let allReviews: any[] = [];
+        for (const userId of followingIds) {
+            const userReviews = await reviewClient.fetchReviewsForUser(userId);
+            allReviews = allReviews.concat(userReviews);
+        }
+        const enrichedReviews = allReviews.map((review: any) => {
             const book = db.books.find(b => b.googleBooksId === review.bookId);
             const user = db.users.find(u => u._id === review.userId);
             return {
@@ -31,12 +38,14 @@ export default function Home() {
                 username: user?.username || "Unknown User"
             };
         });
+
         setFollowingReviews(enrichedReviews);
     };
+
     useEffect(() => {
         fetchBooks();
         fetchFollowingReviews();
-    }, [currentUser, following]);
+    }, [currentUser, localBooks]);
     return (
         <div id={"sn-home"} className={"sn-below-header"}>
             {!currentUser && (

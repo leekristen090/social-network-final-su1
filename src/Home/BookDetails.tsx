@@ -13,9 +13,7 @@ export default function BookDetails() {
     const {users} = useSelector((state: any) => state.usersReducer);
     const {currentUser} = useSelector((state: any) => state.accountReducer);
     const navigate = useNavigate();
-
     const book = books.find((b: any) => b.googleBooksId === bid);
-
     const [reviewText, setReviewText] = useState("");
     const [show, setShow] = useState(false);
     const [bookReviews, setBookReviews] = useState<any[]>([]);
@@ -62,9 +60,6 @@ export default function BookDetails() {
                     {book.authors}<br/><br/>
                     <h4><b>Description:</b></h4>
                     {book.description}
-                    book details and stuff
-                    blah bal
-                    Lorem ipsum dolor sit amet, consectetur adipisicing elit. Asperiores blanditiis consectetur consequuntur cum earum maxime minima nam quas quidem repellendus, suscipit voluptatibus? Aliquam possimus quibusdam quis quisquam ratione repudiandae veniam?
                 </div>
                 <div className={"d-none d-xl-block"}>
                     <img src={`${book.coverURL}`} alt={book.title} height={200}/>
@@ -81,7 +76,7 @@ export default function BookDetails() {
                 <thead>
                 <tr>
                     <th>User</th>
-                    <th>Description</th>
+                    <th>Review</th>
                     <th>Date</th>
                 </tr>
                 </thead>
