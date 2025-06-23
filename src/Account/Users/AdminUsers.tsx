@@ -35,6 +35,21 @@ export default function AdminUsers() {
             fetchUsers();
         }
     };
+    const createUser = async () => {
+        const user = await usersClient.createUser({
+            username: `newuser${Date.now()}`,
+            firstName: "New",
+            lastName: `User${users.length + 1}`,
+            password: "password123",
+            email: `email${users.length + 1}@gmail.com`,
+            role: "READER"
+        });
+        setUsers([...users, user]);
+    };
+    const deleteUser = async (userId: string) => {
+        await usersClient.deleteUser(userId);
+        setUsers(users.filter((u: any) => u._id !== userId));
+    };
     useEffect(() => {
         fetchUsers();
     }, [uid]);
@@ -42,13 +57,14 @@ export default function AdminUsers() {
         <div id={"sn-admin-user-view"} className={"sn-margin-right-left"}>
             <h3>
                 Users
-                <button className={"btn sn-bg-tan"} id={"sn-add-people"}>
+                <button className={"btn sn-bg-tan"} id={"sn-add-people"} onClick={createUser}>
                     <FaPlus className={"me-2"}/>
                     Users
                 </button>
             </h3>
             <FormControl onChange={(e) => filterUsersByName(e.target.value)}
-                         id={"sn-filter-by-name"} className={"float-start w-25 me-2"} placeholder={"Search People"}/>
+                         id={"sn-filter-by-name"} className={"float-start w-25 me-2"}
+                         placeholder={"Search People By Name"}/>
             <select value={role} onChange={(e) => filterUsersByRole(e.target.value)}
                 className={"form-select float-start w-25"} id={"sn-select-role"}>
                 <option value={""}>All Roles</option>
@@ -56,7 +72,7 @@ export default function AdminUsers() {
                 <option value={"AUTHOR"}>Author</option>
                 <option value={"ADMIN"}>Admin</option>
             </select>
-            <PeopleTable users={users}/>
+            <PeopleTable users={users} deleteUser={deleteUser}/>
         </div>
     );
 }
