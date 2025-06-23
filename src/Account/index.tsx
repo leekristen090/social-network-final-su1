@@ -4,6 +4,7 @@ import Profile from "./Profile/Profile.tsx";
 import Signup from "../Login/Signup.tsx";
 import AccountNav from "./AccountNav.tsx";
 import {useSelector} from "react-redux";
+import AdminUsers from "./Users/AdminUsers.tsx";
 
 export default function Account() {
     const {currentUser} = useSelector((state: any) => state.accountReducer);
@@ -18,6 +19,7 @@ export default function Account() {
                             <Route path={"/Signin"} element={<Login />} />
                             <Route path={"/Profile/*"} element={<Profile />} />
                             <Route path={"/Signup"} element={<Signup />} />
+                            <Route path={"/Users"} element={<AdminUsers />} />
                         </Routes>
                     </td>
                 </tr>
