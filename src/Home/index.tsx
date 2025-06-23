@@ -19,33 +19,66 @@ export default function Home() {
         const homeBooks = db.books;
         setLocalBooks(homeBooks);
     };
+    // const fetchFollowingReviews = async () => {
+    //     if (!currentUser) return;
+    //     const following = await followingClient.fetchFollowing(currentUser._id);
+    //     const followingIds = following.filter((f: any) => f.user === currentUser._id).map((f: any) => f.target);
+    //     let allReviews: any[] = [];
+    //     for (const userId of followingIds) {
+    //         const userReviews = await reviewClient.fetchReviewsForUser(userId);
+    //         allReviews = allReviews.concat(userReviews);
+    //     }
+    //     const enrichedReviews = allReviews.map((review: any) => {
+    //         const book = db.books.find(b => b.googleBooksId === review.bookId);
+    //         const user = db.users.find(u => u._id === review.userId);
+    //         return {
+    //             ...review,
+    //             bookTitle: book?.title || "Unknown Book",
+    //             bookCover: book?.coverURL,
+    //             username: user?.username || "Unknown User"
+    //         };
+    //     });
+    //
+    //     setFollowingReviews(enrichedReviews);
+    // };
     const fetchFollowingReviews = async () => {
         if (!currentUser) return;
-        const following = await followingClient.fetchFollowing(currentUser._id);
-        const followingIds = following.filter((f: any) => f.user === currentUser._id).map((f: any) => f.target);
-        let allReviews: any[] = [];
-        for (const userId of followingIds) {
-            const userReviews = await reviewClient.fetchReviewsForUser(userId);
-            allReviews = allReviews.concat(userReviews);
-        }
-        const enrichedReviews = allReviews.map((review: any) => {
-            const book = db.books.find(b => b.googleBooksId === review.bookId);
-            const user = db.users.find(u => u._id === review.userId);
-            return {
-                ...review,
-                bookTitle: book?.title || "Unknown Book",
-                bookCover: book?.coverURL,
-                username: user?.username || "Unknown User"
-            };
-        });
+        try {
+            const following = await followingClient.fetchFollowing(currentUser._id);
 
-        setFollowingReviews(enrichedReviews);
+            const followingIds = following.map((f: any) => f.target._id);
+
+            let allReviews: any[] = [];
+            for (const userId of followingIds) {
+                const userReviews = await reviewClient.fetchReviewsForUser(userId);
+                allReviews = [...allReviews, ...userReviews];
+            }
+            const enrichedReviews = await Promise.all(allReviews.map(async (review) => {
+                const book = db.books.find((b) => b.googleBooksId === review.bookId);
+                let username = "Unknown User";
+                if (review.user?.username) {
+                    username = review.user.username;
+                } else {
+                    const user = db.users.find(u => u._id === review.userId);
+                    username = user?.username || "Unknown User";
+                }
+                return {
+                    ...review,
+                    bookTitle: book?.title || "Unknown Book",
+                    username: username
+                };
+            }));
+
+            setFollowingReviews(enrichedReviews);
+        } catch (err) {
+            console.error("Failed to fetch following reviews:", err);
+        }
     };
 
     useEffect(() => {
         fetchBooks();
         fetchFollowingReviews();
-    }, [currentUser, localBooks]);
+    }, [currentUser]);
     return (
         <div id={"sn-home"} className={"sn-below-header"}>
             {!currentUser && (

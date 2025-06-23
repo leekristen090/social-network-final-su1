@@ -65,7 +65,7 @@ export default function ProfileInfo() {
             g._id === goal._id ? { ...updatedGoal, editing: false } : g
         ));
     };
-    const editGoal = (goalId: string) => {
+    const editGoal = async (goalId: string) => {
         setGoals(goals.map((g: any) =>
             g._id === goalId ? { ...g, editing: true } : g
         ));

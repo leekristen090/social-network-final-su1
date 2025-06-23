@@ -1,5 +1,4 @@
 import {Button, Table} from "react-bootstrap";
-import * as db from "../../Database";
 import {useSelector} from "react-redux";
 import {useEffect, useState} from "react";
 import {Link} from "react-router-dom";
@@ -9,15 +8,31 @@ export default function Following() {
     const {currentUser} = useSelector((state: any) => state.accountReducer);
     const [followingUsers, setFollowingUsers] = useState<any[]>([]);
 
+    // const fetchFollowingUsers = async () => {
+    //     if (!currentUser) return;
+    //     const following = await followingClient.fetchFollowing(currentUser._id);
+    //     const users = db.users;
+    //     const matched = following
+    //         .filter((f: any) => f.user === currentUser._id)
+    //         .map((rel: any) => users.find((user: any) => user._id === rel.target))
+    //         .filter(Boolean);
+    //     setFollowingUsers(matched);
+    // };
+    // const fetchFollowingUsers = async () => {
+    //     if (!currentUser) return;
+    //     const following = await followingClient.fetchFollowing(currentUser._id);
+    //     setFollowingUsers(following);
+    // };
     const fetchFollowingUsers = async () => {
         if (!currentUser) return;
-        const following = await followingClient.fetchFollowing(currentUser._id);
-        const users = db.users;
-        const matched = following
-            .filter((f: any) => f.user === currentUser._id)
-            .map((rel: any) => users.find((user: any) => user._id === rel.target))
-            .filter(Boolean);
-        setFollowingUsers(matched);
+        try {
+            const following = await followingClient.fetchFollowing(currentUser._id);
+            // Extract the populated target users
+            const targets = following.map((f: any) => f.target);
+            setFollowingUsers(targets);
+        } catch (err) {
+            console.error("Error fetching following users:", err);
+        }
     };
 
     const handleUnfollow = async (targetId: string) => {
@@ -48,7 +63,6 @@ export default function Following() {
                             </Link>
                             <Button
                                 className={"float-end me-1 btn-danger"}
-                                id={"sn-user-unfollow-button"}
                                 onClick={(e) => {
                                     e.preventDefault();
                                     e.stopPropagation();
