@@ -156,7 +156,7 @@ export default function Home() {
                             </Link>
                             <Card.Body id={"sn-book-card-body"} className={"sn-bg-tan"}>
                                 <Card.Title id={"sn-book-card-title"}>
-                                    {book.title}
+                                    {book.bookTitle}
                                 </Card.Title>
                                 {/*<Card.Text id={"sn-book-card-text"}>*/}
                                 {/*    {book.description}*/}
