@@ -15,7 +15,8 @@ export default function FollowingProfile() {
             const reviews = await reviewClient.fetchReviewsForUser(userId);
             const withTitles = reviews.map((r: any) => {
                 const book = books.find((b: any) => b.googleBooksId === r.bookId);
-                return { ...r, bookTitle: book ? book.title : "Unknown Book" };
+                return { ...r, bookTitle: book?.bookTitle || r.bookTitle || "Unknown Book"
+                };
             });
             setUserReviews(withTitles);
         }

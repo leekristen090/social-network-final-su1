@@ -18,11 +18,14 @@ export default function UserDetails() {
     const fetchUserReviews = async () => {
         if (userId) {
             const reviews = await reviewClient.fetchReviewsForUser(userId);
-            const withTitles = reviews.map((r: any) => ({
-                ...r,
-                bookTitle: books.find((b: any) => b.googleBooksId === r.bookId)?.title || "Unknown Book",
-                username: r.user?.username || "Unknown User"
-            }));
+            const withTitles = reviews.map((r: any) => {
+                const matchedBook = books.find((b: any) => b.googleBooksId === r.bookId);
+                return {
+                    ...r,
+                    bookTitle: matchedBook?.bookTitle || matchedBook?.title || r.bookTitle || "Unknown Book",
+                    username: r.user?.username || "Unknown User"
+                };
+            });
             setUserReviews(withTitles);
         }
     };

@@ -31,7 +31,7 @@ export const getBookDetails = async (bookId: string | undefined) => {
 
         return {
             googleBooksId: book.id,
-            title: info.title || "Untitled",
+            bookTitle: info.title || "Untitled",
             authors: info.authors?.join(", ") || "Unknown",
             description: info.description || "No description available",
             coverURL: info.imageLinks?.thumbnail || "",
@@ -60,7 +60,7 @@ export const getTrendingBooks = async () => {
         const response = await axios.get(BASE_URL, {
             params: {
                 q: randomQuery,
-                orderBy: "newest",
+                orderBy: "relevance",
                 printType: "books",
                 maxResults: 20,
                 key: API_KEY
@@ -71,7 +71,7 @@ export const getTrendingBooks = async () => {
 
         return books.map((book: any) => ({
             googleBooksId: book.id,
-            title: book.volumeInfo?.title || "Untitled",
+            bookTitle: book.volumeInfo?.title || "Untitled",
             authors: book.volumeInfo?.authors?.join(", ") || "Unknown Author",
             description: book.volumeInfo?.description || "",
             coverURL: book.volumeInfo?.imageLinks?.thumbnail || ""

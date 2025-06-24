@@ -33,7 +33,7 @@ export default function Reviews() {
 
                 try {
                     const book = await getBookDetails(r.bookId);
-                    const title = book?.volumeInfo?.title || book?.title || "Unknown Book";
+                    const title = book?.volumeInfo?.title || book?.bookTitle || "Unknown Book";
                     return { ...r, title };
                 } catch (err) {
                     console.error("Failed to fetch book info from Google Books:", err);
@@ -98,7 +98,7 @@ export default function Reviews() {
                             <th>Book</th>
                             <th>Review</th>
                             <th>Date</th>
-                            <th>actiion</th>
+                            <th  style={{width: "100px"}}>Action</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -127,13 +127,13 @@ export default function Reviews() {
                                 </td>
                                 <td>{new Date(review.timestamp).toLocaleDateString()}</td>
                                 <td>
-                                    <FaPencil
-                                        className={"fs-4 me-2"}
-                                        onClick={() => toggleEdit(review._id)}
-                                    />
                                     <FaTrash
-                                        className={"text-danger fs-4"}
+                                        className={"text-danger fs-4 float-end"}
                                         onClick={() => removeReview(review._id)}
+                                    />
+                                    <FaPencil
+                                        className={"fs-4 me-3 float-end"}
+                                        onClick={() => toggleEdit(review._id)}
                                     />
                                 </td>
                             </tr>

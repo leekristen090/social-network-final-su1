@@ -74,7 +74,7 @@ export default function Home() {
                 }
                 return {
                     ...review,
-                    bookTitle: book?.title || "Unknown Book",
+                    bookTitle: book?.title || review.bookTitle || "Unknown Book",
                     username: username
                 };
             }));

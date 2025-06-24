@@ -49,6 +49,7 @@ export default function BookDetails() {
                 text: reviewText,
                 timestamp: new Date().toISOString()
             };
+            console.log("Review being saved:", newReview);
             await reviewClient.createReview(newReview);
             await fetchBookReviews();
             setReviewText("");
@@ -78,7 +79,7 @@ export default function BookDetails() {
             // Google Books API format
             return {
                 googleBooksId: bookData.id,
-                bookTitle: bookData.volumeInfo.bookTitle,
+                bookTitle: bookData.volumeInfo.title,
                 authors: bookData.volumeInfo.authors?.join(', '),
                 description: bookData.volumeInfo.description,
                 coverURL: bookData.volumeInfo.imageLinks?.thumbnail
