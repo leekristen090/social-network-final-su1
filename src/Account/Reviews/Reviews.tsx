@@ -112,7 +112,7 @@ export default function Reviews() {
                                 <td>
                                     {!review.editing && review.text}
                                     {review.editing && (
-                                        <FormControl
+                                        <FormControl as={"textarea"}
                                             value={review.text}
                                             onChange={(e) =>
                                                 updateText(review._id, e.target.value)
