@@ -18,7 +18,7 @@ export default function BookDetails() {
     // const [book, setBook] = useState(null);
     const [book, setBook] = useState({
         googleBooksId: '',
-        title: '',
+        bookTitle: '',
         authors: '',
         description: '',
         coverURL: ''
@@ -43,6 +43,7 @@ export default function BookDetails() {
         try {
             const newReview = {
                 bookId: bid,
+                bookTitle: book.bookTitle,
                 userId: currentUser._id,
                 username: currentUser.username,
                 text: reviewText,
@@ -77,7 +78,7 @@ export default function BookDetails() {
             // Google Books API format
             return {
                 googleBooksId: bookData.id,
-                title: bookData.volumeInfo.title,
+                bookTitle: bookData.volumeInfo.bookTitle,
                 authors: bookData.volumeInfo.authors?.join(', '),
                 description: bookData.volumeInfo.description,
                 coverURL: bookData.volumeInfo.imageLinks?.thumbnail
@@ -117,7 +118,7 @@ export default function BookDetails() {
 
     return (
         <div id="sn-book-details" className="sn-below-header">
-            <h1>{book.title}</h1>
+            <h1>{book.bookTitle}</h1>
             {/*{location.state?.fromSearch && (*/}
             {/*    <Button*/}
             {/*        variant="outline-secondary"*/}
@@ -143,7 +144,7 @@ export default function BookDetails() {
                 </div>
                 {book.coverURL && (
                     <div className="d-none d-xl-block">
-                        <img src={book.coverURL} alt={book.title} height={200} />
+                        <img src={book.coverURL} alt={book.bookTitle} height={200} />
                     </div>
                 )}
             </div>
@@ -180,7 +181,7 @@ export default function BookDetails() {
                 show={show}
                 handleClose={handleClose}
                 dialogTitle="Add Review"
-                bookTitle={book.title}
+                bookTitle={book.bookTitle}
                 setReview={setReviewText}
                 addReview={handleAddReview}
             />

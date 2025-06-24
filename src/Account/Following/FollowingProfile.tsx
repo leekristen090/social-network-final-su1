@@ -20,10 +20,10 @@ export default function FollowingProfile() {
             setUserReviews(withTitles);
         }
     };
-    const book = userReviews.map(b => {
-        const u = books.find((x: any) => x.googleBooksId === b.bookId);
-        return {...b, title: u ? u.title : "Unknown book"}
-    });
+    // const book = userReviews.map(b => {
+    //     const u = books.find((x: any) => x.googleBooksId === b.bookId);
+    //     return {...b, bookTitle: u ? u.bookTitle : "Unknown book"}
+    // });
     useEffect(() => {
         fetchUserReviews();
     }, []);
@@ -47,11 +47,11 @@ export default function FollowingProfile() {
                         </tr>
                         </thead>
                         <tbody>
-                        {book.map((review: any) => (
+                        {userReviews.map((review: any) => (
                             <tr>
                                 <td>
                                     <Link to={`/GoodBooks/Details/${review.bookId}`}>
-                                        {review.title}
+                                        {review.bookTitle}
                                     </Link>
 
                                 </td>

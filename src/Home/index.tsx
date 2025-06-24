@@ -5,6 +5,7 @@ import * as db from "../Database";
 import {useEffect, useState} from "react";
 import * as followingClient from "../Account/Following/client.ts";
 import * as reviewClient from "../Account/Reviews/client.ts";
+import { getTrendingBooks } from "../Services/googleBooks.ts";
 
 export default function Home() {
     const {currentUser} = useSelector((state: any) => state.accountReducer);
@@ -15,9 +16,18 @@ export default function Home() {
     };
     const [localBooks, setLocalBooks] = useState<any[]>([]);
     const [followingReviews, setFollowingReviews] = useState<any[]>([]);
-    const fetchBooks = () => {
-        const homeBooks = db.books;
-        setLocalBooks(homeBooks);
+    // const fetchBooks = () => {
+    //     const homeBooks = db.books;
+    //     setLocalBooks(homeBooks);
+    // };
+    const fetchBooks = async () => {
+        try {
+            const trendingBooks = await getTrendingBooks();
+            setLocalBooks(trendingBooks);
+        } catch (err) {
+            console.error("Failed to fetch trending books:", err);
+            setLocalBooks([]);
+        }
     };
     // const fetchFollowingReviews = async () => {
     //     if (!currentUser) return;
@@ -89,8 +99,8 @@ export default function Home() {
             {currentUser && followingReviews.length > 0 && (
                 <div id={"sn-following-activity"}>
                     <h2>Activity</h2>
-                    {followingReviews.map((review, index) => (
-                        <Card key={index} className={"mb-2"} id={"sn-following-review-card"}>
+                    {followingReviews.map((review) => (
+                        <Card key={review._id} className={"mb-2"} id={"sn-following-review-card"}>
                             <Card.Header className={"sn-bg-tan"}>
                                 <Button variant={"link"} onClick={() => handleDetailsClick(review.bookId)}>
                                     <strong>{review.bookTitle}</strong>

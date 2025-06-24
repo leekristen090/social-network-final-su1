@@ -5,19 +5,51 @@ import { FaPencil } from "react-icons/fa6";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import * as reviewClient from "./client";
+import {getBookDetails} from "../../Services/googleBooks.ts";
 
 export default function Reviews() {
     const { currentUser } = useSelector((state: any) => state.accountReducer);
     const { books } = useSelector((state: any) => state.booksReducer);
     const [reviews, setReviews] = useState<any[]>([]);
 
+    // const loadReviews = async () => {
+    //     if (currentUser?._id) {
+    //         const fetched = await reviewClient.fetchReviewsForUser(currentUser._id);
+    //         const reviewsWithEditing = fetched.map((r: any) => ({ ...r, editing: false }));
+    //         setReviews(reviewsWithEditing);
+    //     }
+    // };
     const loadReviews = async () => {
-        if (currentUser?._id) {
-            const fetched = await reviewClient.fetchReviewsForUser(currentUser._id);
-            const reviewsWithEditing = fetched.map((r: any) => ({ ...r, editing: false }));
-            setReviews(reviewsWithEditing);
-        }
+        if (!currentUser?._id) return;
+
+        const fetched = await reviewClient.fetchReviewsForUser(currentUser._id);
+
+        const reviewsWithTitles = await Promise.all(
+            fetched.map(async (r: any) => {
+                const localBook = books.find((b: any) => b.googleBooksId === r.bookId);
+                if (localBook) {
+                    return { ...r, title: localBook.title };
+                }
+
+                try {
+                    const book = await getBookDetails(r.bookId);
+                    const title = book?.volumeInfo?.title || book?.title || "Unknown Book";
+                    return { ...r, title };
+                } catch (err) {
+                    console.error("Failed to fetch book info from Google Books:", err);
+                    return { ...r, title: "Unknown Book" };
+                }
+            })
+        );
+
+        const reviewsWithEditing = reviewsWithTitles.map((r) => ({
+            ...r,
+            editing: false,
+        }));
+
+        setReviews(reviewsWithEditing);
     };
+
     useEffect(() => {
         loadReviews();
     }, [currentUser]);
@@ -66,7 +98,7 @@ export default function Reviews() {
                             <th>Book</th>
                             <th>Review</th>
                             <th>Date</th>
-                            <th></th>
+                            <th>actiion</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -74,7 +106,7 @@ export default function Reviews() {
                             <tr key={review._id}>
                                 <td>
                                     <Link to={`/GoodBooks/Details/${review.bookId}`}>
-                                        {review.title}
+                                        {review.bookTitle}
                                     </Link>
                                 </td>
                                 <td>
