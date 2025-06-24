@@ -13,6 +13,9 @@ export default function AdminUsers() {
     const { uid } = useParams();
     const [role, setRole] = useState("");
     const [, setName] = useState("");
+    //const [editing, setEditing] = useState(false);
+    const [editingUserId, setEditingUserId] = useState<string | null>(null);
+    const [editedUser, setEditedUser] = useState<any>({});
     const fetchUsers = async () => {
         const users = await usersClient.findAllUsers();
         setUsers(users);
@@ -50,6 +53,10 @@ export default function AdminUsers() {
         await usersClient.deleteUser(userId);
         setUsers(users.filter((u: any) => u._id !== userId));
     };
+    const saveUser = async (updatedUser: any) => {
+        await usersClient.adminUpdate(updatedUser);
+        setUsers(users.map((u) => (u._id === updatedUser._id ? updatedUser : u)));
+    };
     useEffect(() => {
         fetchUsers();
     }, [uid]);
@@ -63,7 +70,7 @@ export default function AdminUsers() {
                 </button>
             </h3>
             <FormControl onChange={(e) => filterUsersByName(e.target.value)}
-                         id={"sn-filter-by-name"} className={"float-start w-25 me-2"}
+                         id={"sn-filter-by-name"} className={"float-start w-50 me-2"}
                          placeholder={"Search People By Name"}/>
             <select value={role} onChange={(e) => filterUsersByRole(e.target.value)}
                 className={"form-select float-start w-25"} id={"sn-select-role"}>
@@ -72,7 +79,14 @@ export default function AdminUsers() {
                 <option value={"AUTHOR"}>Author</option>
                 <option value={"ADMIN"}>Admin</option>
             </select>
-            <PeopleTable users={users} deleteUser={deleteUser}/>
+            <PeopleTable users={users}
+                         deleteUser={deleteUser}
+                         saveUser={saveUser}
+                         editingUserId={editingUserId}
+                         setEditingUserId={setEditingUserId}
+                         editedUser={editedUser}
+                         setEditedUser={setEditedUser}
+            />
         </div>
     );
 }
